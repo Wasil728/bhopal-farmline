@@ -411,7 +411,11 @@ p, .body-copy {
   border: none;
   cursor: pointer;
   flex-direction: column;
+  justify-content: center;
+  align-items: center;
   gap: 5px;
+  min-width: 44px;
+  min-height: 44px;
   padding: 8px 10px;
   border-radius: var(--neu-radius-sm);
   box-shadow: var(--neu-raised);
@@ -421,15 +425,15 @@ p, .body-copy {
 .menu-toggle:active { box-shadow: var(--neu-pressed); }
 .menu-toggle span {
   display: block;
-  width: 20px;
-  height: 1.5px;
+  width: 22px;
+  height: 2px;
   background: var(--ink-primary);
   border-radius: 1px;
   transition: transform var(--transition-normal), opacity var(--transition-normal);
 }
-.menu-toggle.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.menu-toggle.active span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
 .menu-toggle.active span:nth-child(2) { opacity: 0; }
-.menu-toggle.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+.menu-toggle.active span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
 
 /* ============================================================
    HERO — Editorial Split with Video
@@ -720,7 +724,7 @@ p, .body-copy {
   outline: none;
   color: var(--ink-primary);
   font-family: var(--font-body);
-  font-size: 0.95rem;
+  font-size: 1rem; /* 16px prevents iOS Safari automatic zoom */
   height: 52px;
   caret-color: var(--accent);
 }
@@ -732,9 +736,11 @@ p, .body-copy {
   border: none;
   color: var(--ink-muted);
   cursor: pointer;
-  font-size: 1.1rem;
-  width: 28px;
-  height: 28px;
+  font-size: 1.25rem;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -786,11 +792,15 @@ p, .body-copy {
 
 .filter-btn {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.72rem;
   font-weight: 500;
   letter-spacing: 0.04em;
   text-transform: uppercase;
-  padding: 8px 16px;
+  padding: 10px 18px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--neu-radius-sm);
   border: 1.5px solid transparent;
   background: var(--bg-base);
@@ -831,7 +841,11 @@ p, .body-copy {
   font-size: 0.65rem;
   letter-spacing: 0.06em;
   text-transform: uppercase;
-  padding: 6px 14px;
+  padding: 8px 16px;
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: var(--neu-radius-sm);
   border: none;
   background: var(--bg-base);
@@ -1145,6 +1159,7 @@ p, .body-copy {
   font-weight: 600;
   letter-spacing: 0.02em;
   padding: 11px 20px;
+  min-height: 44px;
   border-radius: var(--neu-radius-sm);
   border: none;
   cursor: pointer;
@@ -1829,8 +1844,9 @@ p, .body-copy {
   border-radius: var(--neu-radius-sm);
   color: var(--ink-primary);
   font-family: var(--font-body);
-  font-size: 0.92rem;
+  font-size: 1rem; /* 16px prevents iOS Safari automatic viewport zoom */
   padding: 12px 16px;
+  min-height: 44px;
   outline: none;
   box-shadow: 6px 6px 12px var(--neu-shadow-dark),
               -6px -6px 12px var(--neu-shadow-light);
@@ -2208,6 +2224,9 @@ p, .body-copy {
     top: 64px;
     left: 0;
     right: 0;
+    max-height: calc(100vh - 64px);
+    overflow-y: auto;
+    -webkit-overflow-scrolling: touch;
     background: var(--bg-page);
     border-bottom: 2px solid var(--ink-primary);
     flex-direction: column;
@@ -2218,6 +2237,9 @@ p, .body-copy {
   .nav.open { display: flex; }
   .nav-link {
     padding: var(--space-3) var(--space-6);
+    min-height: 44px;
+    display: flex;
+    align-items: center;
     width: 100%;
     font-size: 0.85rem;
     border-bottom: 1px solid var(--rule-light);
@@ -2235,6 +2257,19 @@ p, .body-copy {
   .hero-stats-row { grid-template-columns: repeat(3, 1fr); }
   .stat-number { font-size: 2rem; }
 
+  /* Smooth one-handed horizontal scroll for area chips */
+  .area-filter-row {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    padding-bottom: var(--space-2);
+    margin: 0 calc(-1 * var(--space-2));
+    padding-left: var(--space-2);
+    padding-right: var(--space-2);
+  }
+  .area-filter-row::-webkit-scrollbar { display: none; }
+
   .card-grid { grid-template-columns: 1fr; }
 
   .form-row { grid-template-columns: 1fr; }
@@ -2250,4 +2285,6 @@ p, .body-copy {
   .listings-header { flex-direction: column; align-items: flex-start; gap: var(--space-2); }
   .form-container { padding: var(--space-5) var(--space-4) var(--space-9); }
   .checkbox-grid { grid-template-columns: 1fr; }
+  body { font-size: 14px; }
+  p, .body-copy { font-size: 0.95rem; }
 }

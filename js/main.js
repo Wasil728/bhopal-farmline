@@ -819,6 +819,25 @@ function showDetailError(msg) {
 
 function populateDetailPage(farm) {
   document.title = `${farm.name} — Bhopal Farmline`;
+
+  // Dynamic SEO & Open Graph Metadata
+  const dynamicDesc = `${farm.name} in ${farm.area}, Bhopal. Capacity: up to ${farm.capacity} guests. Tariff: ${farm.priceRange || 'Contact Owner'}. Direct owner contact with zero booking fees.`;
+  const metaDesc = document.querySelector('meta[name="description"]');
+  if (metaDesc) metaDesc.content = dynamicDesc;
+
+  const ogTitle = document.querySelector('meta[property="og:title"]');
+  if (ogTitle) ogTitle.content = `${farm.name} — Bhopal Farmline`;
+
+  const ogDesc = document.querySelector('meta[property="og:description"]');
+  if (ogDesc) ogDesc.content = dynamicDesc;
+
+  const ogUrl = document.querySelector('meta[property="og:url"]');
+  if (ogUrl) ogUrl.content = window.location.href;
+
+  const ogImg = document.querySelector('meta[property="og:image"]');
+  if (ogImg && farm.images && farm.images.length > 0) {
+    ogImg.content = farm.images[0];
+  }
   
   // Area & Name
   const areaEl = document.getElementById('detailArea');
@@ -948,7 +967,7 @@ function populateDetailPage(farm) {
     }
     if (galleryImages.length > 0) {
       thumbsHTML += galleryImages.map((img, i) => `
-        <img src="${escapeHTML(img)}" class="gallery-thumb ${(!hasVideo && i===0)?'active':''}" onclick="changeMainImage('${escapeHTML(img)}', this, ${i})">
+        <img src="${escapeHTML(img)}" class="gallery-thumb ${(!hasVideo && i===0)?'active':''}" loading="lazy" decoding="async" alt="Thumbnail ${i+1}" onclick="changeMainImage('${escapeHTML(img)}', this, ${i})">
       `).join('');
     }
     gThumbs.innerHTML = thumbsHTML;
@@ -1154,6 +1173,28 @@ function initFormPage() {
         photoInput.value = '';
         return;
       }
+
+      // Check MIME type and file size (max 5MB per photo)
+      const allowedMimes = ['image/jpeg', 'image/png', 'image/webp', 'image/avif'];
+      const maxPhotoBytes = 5 * 1024 * 1024; // 5MB
+
+      for (let f of files) {
+        if (!allowedMimes.includes(f.type)) {
+          alert(`File "${f.name}" is not a valid image format. Only JPG, PNG, WebP, and AVIF are allowed.`);
+          photoInput.value = '';
+          selectedFiles = [];
+          renderPhotoPreviews();
+          return;
+        }
+        if (f.size > maxPhotoBytes) {
+          alert(`Photo "${f.name}" exceeds the 5MB size limit. Please choose a smaller photo.`);
+          photoInput.value = '';
+          selectedFiles = [];
+          renderPhotoPreviews();
+          return;
+        }
+      }
+
       selectedFiles = files;
       renderPhotoPreviews();
     });
@@ -1274,6 +1315,17 @@ function initFormPage() {
       
       const honeypot = form.querySelector('input[name="website"]');
       if (honeypot && honeypot.value !== '') return;
+
+      // Rate limit: 30-second cooldown per client
+      const lastSubmitTime = localStorage.getItem('bhopal_last_farmhouse_submit');
+      if (lastSubmitTime) {
+        const elapsedSec = (Date.now() - parseInt(lastSubmitTime, 10)) / 1000;
+        if (elapsedSec < 30) {
+          const waitSec = Math.ceil(30 - elapsedSec);
+          alert(`Please wait ${waitSec} seconds before submitting another listing.`);
+          return;
+        }
+      }
       
       const submitBtn = document.getElementById('submitBtn');
       if (submitBtn) {
@@ -1349,6 +1401,7 @@ function initFormPage() {
         if (supabaseClient) {
           const { error: dbErr } = await supabaseClient.from('farmhouses').insert([payload]);
           if (dbErr) throw dbErr;
+          localStorage.setItem('bhopal_last_farmhouse_submit', Date.now().toString());
         }
         
         // Track form submission as a conversion event

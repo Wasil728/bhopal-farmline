@@ -1,0 +1,4 @@
+﻿User-agent: *
+Allow: /
+
+Sitemap: https://wasil728.github.io/bhopal-farmline/sitemap.xml
