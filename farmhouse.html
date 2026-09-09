@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#eef0ec">
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-32QNDNF0R0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-32QNDNF0R0');
+  </script>
+  <title>Farmhouse Details — Bhopal Farmline</title>
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+  <link rel="stylesheet" href="css/style.css?v=20260828">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="page-detail">
+
+  <!-- Header -->
+  <header id="header" class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="Bhopal Farmline Home">
+        <span class="logo-icon">🏡</span>
+        <span class="logo-text">Bhopal <span>Farmline</span></span>
+      </a>
+      <button id="menuToggle" class="menu-toggle" aria-label="Toggle Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="navMenu" class="nav">
+        <a href="index.html" class="nav-link">Browse</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="add-farmhouse.html" class="nav-link nav-cta">List Your Farmhouse</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container" style="padding-top: var(--space-6); padding-bottom: var(--space-9);">
+    <div style="margin-bottom: var(--space-5);">
+      <a href="index.html" class="back-link">← Back to all listings</a>
+    </div>
+
+    <!-- Asymmetric Editorial Detail Layout -->
+    <div id="detailContent" class="detail-layout">
+      
+      <!-- Gallery Column (Left) -->
+      <div class="detail-left">
+        <span class="section-eyebrow">01 — PHOTOGRAPHY</span>
+        <div class="gallery-main-container" style="margin-top: var(--space-2);">
+          <video id="galleryVideo" class="gallery-video" controls playsinline style="display:none; width:100%; height:100%; object-fit:cover; background:#000;"></video>
+          <img id="galleryMain" class="gallery-main" style="display:none" alt="Farmhouse photo">
+          <div id="galleryPlaceholder" class="card-image-placeholder" style="height: 100%; font-size: 3rem; flex-direction: column; gap: var(--space-3);">
+            <span>🏡</span>
+            <span style="color: var(--ink-muted); font-family: var(--font-mono); font-size: 0.75rem;">No photos uploaded yet</span>
+          </div>
+        </div>
+        <div id="galleryThumbs" class="gallery-thumbs"></div>
+      </div>
+      
+      <!-- Property Info Column (Right) -->
+      <div class="detail-right">
+        <div class="detail-info">
+          <span class="section-eyebrow">PROPERTY SPECIFICATIONS</span>
+          <div id="detailArea" class="detail-area-tag"></div>
+          <h1 id="detailName" class="detail-name"></h1>
+          <div id="detailBadges" class="detail-badges"></div>
+          <div id="bestForTags" style="display:flex; flex-wrap:wrap; gap:8px; margin-bottom: var(--space-5);"></div>
+          
+          <div class="detail-actions">
+            <a id="detailWhatsapp" href="#" target="_blank" rel="noopener" class="btn btn-whatsapp btn-large">WhatsApp Owner</a>
+            <a id="detailCall" href="#" class="btn btn-call btn-large">Call Owner</a>
+            <button id="shareBtn" class="btn btn-secondary btn-large" style="flex: none; width: 100%;">Share Link</button>
+            <span id="shareTooltip" style="display:none; color: var(--success); font-family: var(--font-mono); font-size: 0.8rem; text-align: center; width: 100%;">Link copied! ✓</span>
+          </div>
+          
+          <div>
+            <span class="section-eyebrow">02 — INCLUDED AMENITIES</span>
+            <div id="amenityList" class="amenities-grid" style="margin-top: var(--space-2);"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Editorial Sections Divided by 1px Rule Lines -->
+    <div style="margin-top: var(--space-4);">
+      
+      <div class="detail-section-block">
+        <span class="section-eyebrow">03 — PROPERTY DESCRIPTION</span>
+        <h3>About this Farmhouse</h3>
+        <p id="detailDescription" class="body-copy"></p>
+      </div>
+      
+      <div id="reviewsSection" class="detail-section-block" style="display:none;">
+        <span class="section-eyebrow">04 — VERIFIED TESTIMONIALS</span>
+        <h3>Guest Experiences</h3>
+        <div id="reviewsList"></div>
+      </div>
+      
+      <div id="faqsSection" class="detail-section-block" style="display:none;">
+        <span class="section-eyebrow">05 — FREQUENTLY ASKED QUESTIONS</span>
+        <h3>Essential Inquiries</h3>
+        <div id="faqsList"></div>
+      </div>
+      
+      <div class="detail-section-block">
+        <span class="section-eyebrow">06 — LOCATION &amp; NAVIGATION</span>
+        <h3>Address &amp; Directions</h3>
+        <p id="detailAddress" class="body-copy" style="margin-bottom: var(--space-4);"></p>
+        <a id="mapLink" href="#" target="_blank" rel="noopener" class="btn btn-secondary" style="display: inline-flex; width: auto;">Open in Google Maps 📍</a>
+      </div>
+
+    </div>
+  </main>
+
+  <div id="lightbox" class="lightbox" style="display:none">
+    <button id="lightboxClose" class="lightbox-close">×</button>
+    <img id="lightboxImg" class="lightbox-img" alt="Lightbox image">
+  </div>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <a href="index.html" class="logo">
+            <span class="logo-icon">🏡</span>
+            <span class="logo-text">Bhopal <span>Farmline</span></span>
+          </a>
+          <p>Bhopal's free community directory for finding, comparing, and directly contacting farmhouse owners.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">Browse All</a></li>
+            <li><a href="add-farmhouse.html">List Your Farmhouse</a></li>
+            <li><a href="about.html">About Directory</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <p>For support or verification:</p>
+          <p><a href="mailto:support@bhopalfarmline.in" class="footer-contact-link">support@bhopalfarmline.in</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Bhopal Farmline — Free Community Directory</p>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+  <script src="js/data.js?v=20260828" defer></script>
+  <script src="js/main.js?v=20260828" defer></script>
+</body>
+</html>

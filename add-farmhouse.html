@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#eef0ec">
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-32QNDNF0R0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-32QNDNF0R0');
+  </script>
+  <title>List Your Farmhouse — Bhopal Farmline</title>
+  <meta name="description" content="Add your farmhouse to Bhopal Farmline — the free community directory. Fill the form, we verify and list it for free.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="stylesheet" href="css/style.css?v=20260828">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="page-form">
+
+  <!-- Header -->
+  <header id="header" class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="Bhopal Farmline Home">
+        <span class="logo-icon">🏡</span>
+        <span class="logo-text">Bhopal <span>Farmline</span></span>
+      </a>
+      <button id="menuToggle" class="menu-toggle" aria-label="Toggle Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="navMenu" class="nav">
+        <a href="index.html" class="nav-link">Browse</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="add-farmhouse.html" class="nav-link active nav-cta">List Your Farmhouse</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="form-container">
+
+    <!-- Ownership Gate — Full-bleed Editorial Verification Moment -->
+    <div id="ownershipGate" class="ownership-gate">
+      <span class="section-eyebrow">00 — VERIFICATION GATE</span>
+      <h2 class="gate-headline">Are you the owner or authorized manager of this farmhouse?</h2>
+      <div class="rule" style="margin: var(--space-4) 0 var(--space-6); width: 100%;"></div>
+      <p class="gate-sub">
+        Bhopal Farmline is an independent directory where guests directly connect with verified property custodians. If you are a guest seeking a venue, please browse our directory instead.
+      </p>
+      <div class="gate-actions">
+        <button type="button" id="gateYes" class="btn btn-primary btn-large">Yes, I am the Owner →</button>
+        <a href="index.html" id="gateNo" class="btn btn-secondary btn-large">No, Browse Directory</a>
+      </div>
+    </div>
+
+    <!-- Form Container (Hidden initially until gate is confirmed) -->
+    <div id="formWrapper" style="display: none;">
+      
+      <div class="form-header">
+        <span class="section-eyebrow">OWNER REGISTRATION PORTAL</span>
+        <h1>List Your Farmhouse</h1>
+        <p class="body-copy">Submit your property specifications. Every entry is verified via direct telephone before publication to maintain directory integrity.</p>
+      </div>
+
+      <form id="farmhouseForm">
+        <!-- Honeypot -->
+        <input type="text" name="website" style="display:none;" tabindex="-1" autocomplete="off">
+
+        <!-- Section 1 -->
+        <div class="form-section">
+          <div class="form-section-title-wrap">
+            <span class="section-eyebrow">01 — BASIC INFORMATION</span>
+            <h3>Property Identity</h3>
+          </div>
+
+          <div class="form-group">
+            <label for="formName">Farmhouse Name *</label>
+            <input type="text" id="formName" class="neu-raised" required placeholder="e.g. Green Valley Retreat">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="formArea">Region / Road *</label>
+              <select id="formArea" class="neu-raised" required>
+                <option value="" disabled selected>Select Region</option>
+                <option value="Kolar Road">Kolar Road</option>
+                <option value="Ratibad">Ratibad</option>
+                <option value="Berasia Road">Berasia Road</option>
+                <option value="Vidisha Road">Vidisha Road</option>
+                <option value="Obedullaganj">Obedullaganj</option>
+                <option value="Hoshangabad Road">Hoshangabad Road</option>
+                <option value="Kerwa Dam">Kerwa Dam</option>
+                <option value="Misrod">Misrod</option>
+                <option value="Neelbad">Neelbad</option>
+                <option value="Phanda">Phanda</option>
+                <option value="Katara Hills">Katara Hills</option>
+                <option value="Bairagarh">Bairagarh</option>
+                <option value="Raisen Road">Raisen Road</option>
+                <option value="Sehore Road">Sehore Road</option>
+                <option value="Ayodhya Bypass">Ayodhya Bypass</option>
+                <option value="Bhadbhada Road">Bhadbhada Road</option>
+                <option value="Kalkheda">Kalkheda</option>
+                <option value="Islam Nagar">Islam Nagar</option>
+                <option value="Badwai">Badwai</option>
+                <option value="Mandideep">Mandideep</option>
+                <option value="Airport Road">Airport Road</option>
+                <option value="Other">Other (specify below)</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="formCapacity">Guest Capacity *</label>
+              <input type="text" id="formCapacity" class="neu-raised" required placeholder="e.g. 50">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <input type="text" id="formAreaCustom" class="neu-raised" style="display: none;" placeholder="Enter custom area name">
+          </div>
+
+          <div class="form-group">
+            <label for="formAddress">Complete Postal Address *</label>
+            <input type="text" id="formAddress" class="neu-raised" required placeholder="Full physical address for navigation">
+          </div>
+
+          <div class="form-group">
+            <label for="formPrice">Tariff Range (Per 24h Session) *</label>
+            <input type="text" id="formPrice" class="neu-raised" required placeholder="e.g. ₹8,000 – ₹12,000">
+          </div>
+        </div>
+
+        <!-- Section 2 -->
+        <div class="form-section">
+          <div class="form-section-title-wrap">
+            <span class="section-eyebrow">02 — CONTACT DETAILS</span>
+            <h3>Communication Channels</h3>
+          </div>
+
+          <div class="form-group">
+            <label for="formSubmitterPhone">Verification Telephone (Confidential) *</label>
+            <input type="tel" id="formSubmitterPhone" class="neu-raised" required placeholder="10-digit mobile number" maxlength="10">
+            <small>Internal verification only. Never published in the public directory.</small>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="formPhone">Public Inquiry Line *</label>
+              <input type="tel" id="formPhone" class="neu-raised" required placeholder="10-digit mobile" maxlength="10">
+              <small>Displayed directly on your listing.</small>
+            </div>
+            <div class="form-group">
+              <label for="formWhatsapp">WhatsApp Contact *</label>
+              <input type="tel" id="formWhatsapp" class="neu-raised" required placeholder="10-digit mobile" maxlength="10">
+              <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="sameAsPhone" style="width: 16px; height: 16px; margin: 0; accent-color: var(--accent);">
+                <label for="sameAsPhone" style="display: inline; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-muted); margin: 0; text-transform: none; letter-spacing: 0;">Same as Phone</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 3 -->
+        <div class="form-section">
+          <div class="form-section-title-wrap">
+            <span class="section-eyebrow">03 — SPECIFICATIONS &amp; AMENITIES</span>
+            <h3>Features &amp; Offerings</h3>
+          </div>
+
+          <div class="form-group">
+            <label for="formDescription">Overview &amp; House Rules</label>
+            <textarea id="formDescription" class="neu-raised" rows="4" maxlength="1000" placeholder="Detail the property setting, key amenities, proximity to landmarks, noise regulations…"></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Available Amenities (Select All Applicable)</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Pool"><span>🏊</span> Pool</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="DJ Allowed"><span>🎵</span> DJ Allowed</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Bonfire/BBQ"><span>🔥</span> Bonfire/BBQ</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="AC Rooms"><span>❄️</span> AC Rooms</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Overnight Stay"><span>🌙</span> Overnight Stay</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Catering"><span>🍽️</span> Catering</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Crockery &amp; Utensils"><span>🍴</span> Crockery &amp; Utensils</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Tables &amp; Chairs"><span>🪑</span> Tables &amp; Chairs</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Tents"><span>⛺</span> Tents</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Parking"><span>🅿️</span> Parking</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Decoration Service"><span>🎊</span> Decoration Service</label>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Event Suitability (Select All Applicable)</label>
+            <div class="checkbox-grid">
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="best_for" value="Wedding"><span>💒</span> Wedding</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="best_for" value="Birthday"><span>🎂</span> Birthday</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="best_for" value="Picnic"><span>🧺</span> Picnic</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="best_for" value="Family Gathering"><span>👨‍👩‍👧‍👦</span> Family Gathering</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="best_for" value="Corporate"><span>💼</span> Corporate</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="best_for" value="Other"><span>🎉</span> Other</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section 4 -->
+        <div class="form-section">
+          <div class="form-section-title-wrap">
+            <span class="section-eyebrow">04 — PROPERTY PHOTOGRAPHY</span>
+            <h3>Visual Documentation</h3>
+          </div>
+          <p class="body-copy" style="color: var(--ink-muted); font-size: 0.85rem; margin-bottom: var(--space-4);">Upload up to 5 clear landscape photographs. Maximum 5MB per file.</p>
+
+          <div class="upload-area neu-raised" id="uploadArea">
+            <div class="upload-icon">📷</div>
+            <p style="color: var(--ink-secondary); margin-bottom: var(--space-3); font-size: 0.9rem;">Select or drag property photographs</p>
+            <input type="file" id="formPhotos" name="photos" multiple accept="image/jpeg,image/png,image/webp" style="display:none;">
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('formPhotos').click()">Choose Photographs</button>
+          </div>
+
+          <div class="upload-previews" id="uploadPreviews" style="display: none;"></div>
+
+          <div class="form-group" style="margin-top: var(--space-5);">
+            <label>Property Video <span style="color: var(--ink-muted); font-weight: 400;">(Optional)</span></label>
+            <p class="body-copy" style="color: var(--ink-muted); font-size: 0.85rem; margin-bottom: var(--space-3);">
+              Add one short video (max 20MB, ideally 10–20 seconds) — a quick walkthrough or drone shot. This may be featured on our homepage.
+            </p>
+            <div class="upload-area neu-raised" id="videoUploadArea">
+              <div class="upload-icon">🎥</div>
+              <p style="color: var(--ink-secondary); margin-bottom: var(--space-3); font-size: 0.9rem;">Select a video file</p>
+              <input type="file" id="formVideo" accept="video/mp4,video/webm,video/quicktime" style="display:none;">
+              <button type="button" class="btn btn-secondary" onclick="document.getElementById('formVideo').click()">Choose Video</button>
+            </div>
+            <div id="videoError" style="display:none; color: var(--error); font-size: 0.85rem; margin-top: var(--space-2); font-weight: 500;"></div>
+            <div id="videoPreview" style="display:none; margin-top: var(--space-3);"></div>
+          </div>
+        </div>
+
+        <!-- Section 5 -->
+        <div class="form-section">
+          <div class="form-section-title-wrap">
+            <span class="section-eyebrow">05 — CONFIRMATION &amp; SUBMISSION</span>
+            <h3>Declaration</h3>
+          </div>
+          
+          <div class="form-submit-row">
+            <div class="permission-row">
+              <input type="checkbox" id="formPermission">
+              <label for="formPermission">
+                I affirm that I am the verified owner or authorized custodian of this property. All supplied details are authentic. I consent to receiving a verification telephone call prior to publication.
+              </label>
+            </div>
+            <button type="submit" class="btn btn-primary btn-large" id="submitBtn" disabled>Submit Listing Application →</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <a href="index.html" class="logo">
+            <span class="logo-icon">🏡</span>
+            <span class="logo-text">Bhopal <span>Farmline</span></span>
+          </a>
+          <p>Bhopal's free community directory for finding, comparing, and directly contacting farmhouse owners.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">Browse All</a></li>
+            <li><a href="add-farmhouse.html">List Your Farmhouse</a></li>
+            <li><a href="about.html">About Directory</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <p>For support or verification:</p>
+          <p><a href="mailto:support@bhopalfarmline.in" class="footer-contact-link">support@bhopalfarmline.in</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Bhopal Farmline — Free Community Directory</p>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js" defer></script>
+  <script src="js/data.js?v=20260828" defer></script>
+  <script src="js/main.js?v=20260828" defer></script>
+</body>
+</html>

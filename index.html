@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#eef0ec">
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-32QNDNF0R0"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-32QNDNF0R0');
+  </script>
+  <title>Bhopal Farmline — Editorial Farmhouse Directory</title>
+  <meta name="description" content="Find, compare and directly contact farmhouse owners in Bhopal. Browse all listings by area and amenities. Zero booking fees.">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🏡</text></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
+  <link rel="dns-prefetch" href="https://images.unsplash.com">
+  <link rel="stylesheet" href="css/style.css?v=20260828">
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- Header -->
+  <header id="header" class="header">
+    <div class="container header-inner">
+      <a href="index.html" class="logo" aria-label="Bhopal Farmline Home">
+        <span class="logo-icon">🏡</span>
+        <span class="logo-text">Bhopal <span>Farmline</span></span>
+      </a>
+      <button id="menuToggle" class="menu-toggle" aria-label="Toggle Menu">
+        <span></span><span></span><span></span>
+      </button>
+      <nav id="navMenu" class="nav">
+        <a href="index.html" class="nav-link active">Browse</a>
+        <a href="about.html" class="nav-link">About</a>
+        <a href="add-farmhouse.html" class="nav-link nav-cta">List Your Farmhouse</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section — Editorial Split with Video -->
+  <section id="hero" class="hero">
+    <!-- Top meta bar -->
+    <div class="hero-meta-bar">
+      <div class="container hero-meta-inner">
+        <span class="hero-meta-tag">Issue 04 · Bhopal Community Almanac</span>
+        <span class="hero-meta-tag">Direct Owner Access · 100% Free</span>
+      </div>
+    </div>
+
+    <div class="container">
+      <div class="hero-editorial">
+        <div class="hero-text-col">
+          <span class="eyebrow">BHOPAL'S FARMHOUSE DIRECTORY</span>
+          <h1 class="hero-headline">
+            <span class="hero-headline-line"><span>Farmhouse Dhundne Ka</span></span>
+            <span class="hero-headline-line"><span><em>Jhanjhat Khatam</em></span></span>
+          </h1>
+          <p class="hero-sub">Browse all verified listings. Compare amenities. Contact owners directly with zero booking fees.</p>
+          <div class="hero-stats-row">
+            <div class="stat-box">
+              <span id="statFarmhouses" class="stat-number">—</span>
+              <span class="stat-label">Farmhouses</span>
+            </div>
+            <div class="stat-box">
+              <span id="statAreas" class="stat-number">—</span>
+              <span class="stat-label">Regions</span>
+            </div>
+            <div class="stat-box">
+              <span class="stat-number">₹0</span>
+              <span class="stat-label">Booking Fee</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-video-col">
+          <!-- Editorial Video Placeholder (displayed when no approved videos are available) -->
+          <div class="hero-video-placeholder">
+            <span class="hero-video-placeholder-icon">🏡</span>
+            <span class="hero-video-placeholder-text">Countryside Stays &amp; Retreats</span>
+            <span class="hero-video-placeholder-tag">Bhopal Video Reel</span>
+          </div>
+
+          <video class="hero-video" autoplay muted loop playsinline style="display:none;"></video>
+          <div class="hero-video-overlay" style="display:none;"></div>
+          
+          <div class="hero-video-caption" style="display:none;">
+            <span class="hero-video-caption-name"></span>
+            <span class="hero-video-caption-area"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Search & Filters -->
+  <section id="search" class="search-section">
+    <div class="container">
+      <div class="search-card">
+        <div class="search-header">
+          <span class="section-eyebrow">01 — SEARCH &amp; FILTERS</span>
+          <h2>Find by Name or Amenity</h2>
+        </div>
+
+        <div class="search-input-wrap">
+          <span class="search-icon">🔍</span>
+          <input type="text" id="searchInput" class="search-input" placeholder="Search farmhouse name, area, amenity…" autocomplete="off">
+          <button id="searchClear" class="search-clear" style="display:none;" aria-label="Clear">×</button>
+        </div>
+
+        <div class="filter-panel">
+          <div class="filter-section">
+            <span class="section-eyebrow eyebrow-muted">FILTER BY REGION</span>
+            <div id="areaFilters" class="area-filter-row"></div>
+          </div>
+
+          <div class="filter-divider"></div>
+
+          <div class="filter-section">
+            <div class="filter-section-header">
+              <span class="section-eyebrow eyebrow-muted">FILTER BY AMENITIES</span>
+              <button id="clearAmenities" class="btn-clear-amenities" style="display:none;">Clear Amenities</button>
+            </div>
+            <div id="amenitySelected" class="amenity-selected-count" style="display:none;"></div>
+            <div id="amenityFilters" class="amenity-filter-grid"></div>
+          </div>
+
+          <button id="clearFilters" class="btn-reset-all" style="display:none;">Reset All Filters</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- New Listings -->
+  <section id="newListingsSection" class="new-listings-section" style="display:none;">
+    <div class="container">
+      <div class="listings-header">
+        <div class="listings-title-wrap">
+          <span class="section-eyebrow">02 — RECENT ADDITIONS</span>
+          <h2 class="listings-title">Recently Added</h2>
+        </div>
+      </div>
+      <div id="newListingsGrid" class="card-grid" style="margin-bottom:48px;"></div>
+    </div>
+  </section>
+
+  <!-- All Listings -->
+  <section id="listings" class="listings-section">
+    <div class="container">
+      <div class="listings-header">
+        <div class="listings-title-wrap">
+          <span class="section-eyebrow">03 — COMPLETE DIRECTORY</span>
+          <h2 class="listings-title">All Farmhouses</h2>
+        </div>
+        <span id="listingsCount" class="listings-count"></span>
+      </div>
+      <div id="cardGrid" class="card-grid"></div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <a href="index.html" class="logo">
+            <span class="logo-icon">🏡</span>
+            <span class="logo-text">Bhopal <span>Farmline</span></span>
+          </a>
+          <p>Bhopal's free community directory for finding, comparing, and directly contacting farmhouse owners. No booking fees, no middlemen.</p>
+        </div>
+        <div class="footer-col">
+          <h3>Quick Links</h3>
+          <ul class="footer-links">
+            <li><a href="index.html">Browse All</a></li>
+            <li><a href="add-farmhouse.html">List Your Farmhouse</a></li>
+            <li><a href="about.html">About Directory</a></li>
+            <li><a href="privacy.html">Privacy Policy</a></li>
+          </ul>
+        </div>
+        <div class="footer-col">
+          <h3>Contact</h3>
+          <p>For support or verification:</p>
+          <p><a href="mailto:support@bhopalfarmline.in" class="footer-contact-link">support@bhopalfarmline.in</a></p>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 Bhopal Farmline — Free Community Directory</p>
+      </div>
+    </div>
+  </footer>
+
+  <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+  <script src="js/data.js?v=20260828" defer></script>
+  <script src="js/main.js?v=20260828" defer></script>
+</body>
+</html>
