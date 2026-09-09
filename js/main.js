@@ -57,12 +57,33 @@ function safeSessionRemove(key) {
   try { sessionStorage.removeItem(key); } catch (e) {}
 }
 
-// VALID AREA VALUES for Supabase farmhouses table — use exactly as written:
-// 'Kolar Road', 'Ratibad', 'Berasia Road', 'Vidisha Road', 'Obedullaganj',
-// 'Hoshangabad Road', 'Kerwa Dam', 'Misrod', 'Neelbad', 'Phanda',
-// 'Katara Hills', 'Bairagarh', 'Raisen Road', 'Sehore Road',
-// 'Ayodhya Bypass', 'Bhadbhada Road', 'Kalkheda', 'Islam Nagar',
-// 'Badwai', 'Mandideep', 'Airport Road'
+// UI Configuration Constants (Filter Options & Icons)
+window.areas = window.areas || [
+  "Kolar Road", "Ratibad", "Berasia Road", "Vidisha Road", "Obedullaganj",
+  "Hoshangabad Road", "Kerwa Dam", "Misrod", "Neelbad", "Phanda",
+  "Katara Hills", "Bairagarh", "Raisen Road", "Sehore Road", "Ayodhya Bypass",
+  "Bhadbhada Road", "Kalkheda", "Islam Nagar", "Badwai", "Mandideep", "Airport Road"
+];
+
+window.amenityFilters = window.amenityFilters || [
+  "Pool", "DJ Allowed", "Bonfire/BBQ", "AC Rooms", "Overnight Stay",
+  "Catering", "Crockery & Utensils", "Tables & Chairs", "Tents", "Parking", "Decoration Service"
+];
+
+window.amenityIcons = window.amenityIcons || {
+  "Pool": "🏊", "DJ Allowed": "🎵", "Bonfire/BBQ": "🔥", "AC Rooms": "❄️",
+  "Overnight Stay": "🌙", "Catering": "🍽️", "Crockery & Utensils": "🍴",
+  "Tables & Chairs": "🪑", "Tents": "⛺", "Parking": "🅿️", "Decoration Service": "🎊"
+};
+
+window.bestForOptions = window.bestForOptions || [
+  "Wedding", "Birthday", "Picnic", "Family Gathering", "Corporate", "Other"
+];
+
+window.bestForIcons = window.bestForIcons || {
+  "Wedding": "💒", "Birthday": "🎂", "Picnic": "🧺",
+  "Family Gathering": "👨‍👩‍👧‍👦", "Corporate": "💼", "Other": "🎉"
+};
 
 // Global State
 let allFarmhouses = [];
