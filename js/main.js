@@ -36,6 +36,13 @@ const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 // Used in rotating hero showcase on index.html and shown alongside
 // photos on the farmhouse detail page. Owner uploads via add-farmhouse.html.
 
+// pricing_slots: array of { label, price } pairs, max 6 per farmhouse.
+// Owner defines their own time labels (e.g. "6 Hours", "Full Day", "Overnight")
+// since farmhouse pricing structures vary too much for a fixed dropdown.
+// price_range (legacy single field) is kept as a fallback for old listings
+// that haven't been updated to use pricing_slots yet.
+// pricing_slots: max 6 entries per farmhouse, ~80 chars total per entry = negligible storage impact, well within free tier limits.
+
 // ── SUPABASE TOGGLE ──────────────────────────────────────────────
 // Live database connected.
 const SUPABASE_ENABLED = true;
@@ -351,6 +358,7 @@ async function fetchListings() {
           address: item.address,
           capacity: item.capacity,
           priceRange: item.price_range || item.priceRange,
+          pricingSlots: item.pricing_slots || [],
           amenities: item.amenities || [],
           bestFor: item.best_for || item.bestFor || [],
           description: item.description,
@@ -673,6 +681,31 @@ function createCardHTML(f, isNew = false) {
   const waNumber = String(f.whatsapp || f.phone || '').replace(/[^0-9]/g, '');
   const waLink = `https://wa.me/91${waNumber.slice(-10)}?text=${waMsg}`;
   const callLink = `tel:+91${String(f.phone || '').slice(-10)}`;
+
+  // Determine price display: prefer pricing_slots starting price, fallback to priceRange
+  let cardPriceDisplay = 'Price on request — call karo';
+  const slots = f.pricingSlots || [];
+  if (slots.length > 0) {
+    // Parse numeric value from each slot's price string and find the minimum
+    let minVal = Infinity;
+    let minPriceStr = '';
+    slots.forEach(slot => {
+      // Strip non-numeric characters (₹ commas spaces) and try to parse
+      const num = parseFloat(String(slot.price || '').replace(/[^\d.]/g, ''));
+      if (!isNaN(num) && num < minVal) {
+        minVal = num;
+        minPriceStr = slot.price;
+      }
+    });
+    if (minPriceStr) {
+      cardPriceDisplay = `Starting ${minPriceStr}`;
+    } else {
+      // All prices are non-numeric — show the first slot price as-is
+      cardPriceDisplay = `Starting ${slots[0].price}`;
+    }
+  } else if (f.priceRange) {
+    cardPriceDisplay = f.priceRange;
+  }
   
   return `
     <article class="farm-card" onclick="if(!event.target.closest('.card-actions')) window.location.href='farmhouse.html?id=${f.id}'">
@@ -691,8 +724,8 @@ function createCardHTML(f, isNew = false) {
             <span class="spec-val">👥 Up to ${f.capacity || '50'}</span>
           </div>
           <div class="spec-col">
-            <span class="spec-label">Tariff / Day</span>
-            <span class="spec-val spec-price">💰 ${escapeHTML(f.priceRange || 'Contact')}</span>
+            <span class="spec-label">Tariff</span>
+            <span class="spec-val spec-price">💰 ${escapeHTML(cardPriceDisplay)}</span>
           </div>
         </div>
 
@@ -845,12 +878,34 @@ function populateDetailPage(farm) {
   if (areaEl) areaEl.textContent = `📍 ${farm.area}`;
   if (nameEl) nameEl.textContent = farm.name;
   
-  // Badges
+  // Badges — capacity only (pricing handled by the slots grid below)
   const badgesEl = document.getElementById('detailBadges');
   if (badgesEl) {
-    badgesEl.innerHTML = `
-      <span class="stamp-badge">👥 Up to ${farm.capacity} Guests</span>
-      <span class="stamp-badge">💰 ${escapeHTML(farm.priceRange)}</span>`;
+    badgesEl.innerHTML = `<span class="stamp-badge">👥 Up to ${farm.capacity} Guests</span>`;
+  }
+
+  // Pricing Slots Grid — show structured tariff table or fallback to legacy priceRange
+  const pricingGrid = document.getElementById('pricingSlotsGrid');
+  const pricingDisplay = document.getElementById('pricingSlotsDisplay');
+  if (pricingGrid) {
+    const slots = farm.pricingSlots || [];
+    if (slots.length > 0) {
+      pricingGrid.innerHTML = slots.map(slot => `
+        <div class="pricing-slot-card">
+          <span class="pricing-slot-label">${escapeHTML(slot.label)}</span>
+          <span class="pricing-slot-price">${escapeHTML(slot.price)}</span>
+        </div>`).join('');
+    } else if (farm.priceRange) {
+      // Legacy fallback: show the old single price_range as a single badge
+      pricingGrid.innerHTML = `
+        <div class="pricing-slot-card">
+          <span class="pricing-slot-label">Tariff / Day</span>
+          <span class="pricing-slot-price">${escapeHTML(farm.priceRange)}</span>
+        </div>`;
+    } else {
+      // Neither exists — hide the block entirely
+      if (pricingDisplay) pricingDisplay.style.display = 'none';
+    }
   }
   
   // Best For
@@ -1138,14 +1193,92 @@ function initFormPage() {
     });
   }
   
-  // Permission Checkbox -> Submit Button Enable
+  // Permission Checkbox + Pricing Slots Validation -> Submit Button Enable
   const permCheck = document.getElementById('formPermission');
   const submitBtn = document.getElementById('submitBtn');
-  if (permCheck && submitBtn) {
-    const updateSubmit = () => { submitBtn.disabled = !permCheck.checked; };
-    updateSubmit();
-    permCheck.addEventListener('change', updateSubmit);
+
+  // Helper: check if at least 1 complete pricing slot exists (both label and price filled)
+  function hasValidPricingSlot() {
+    const rows = document.querySelectorAll('#pricingSlotsList .pricing-slot-row');
+    for (const row of rows) {
+      const label = row.querySelector('.slot-label-input')?.value.trim() || '';
+      const price = row.querySelector('.slot-price-input')?.value.trim() || '';
+      if (label && price) return true;
+    }
+    return false;
   }
+
+  function updateSubmitState() {
+    if (!submitBtn || !permCheck) return;
+    submitBtn.disabled = !(permCheck.checked && hasValidPricingSlot());
+  }
+
+  if (permCheck && submitBtn) {
+    updateSubmitState();
+    permCheck.addEventListener('change', updateSubmitState);
+  }
+
+  // ── PRICING SLOT BUILDER ──────────────────────────────────────────────────
+  // Maximum 6 pricing slots per farmhouse. Owner defines custom labels
+  // (e.g. "6 Hours", "Full Day", "Overnight") since pricing structures vary.
+  const MAX_PRICING_SLOTS = 6;
+  const pricingSlotsList = document.getElementById('pricingSlotsList');
+  const addPricingSlotBtn = document.getElementById('addPricingSlot');
+  const pricingSlotLimitNote = document.getElementById('pricingSlotLimitNote');
+
+  function createSlotRow() {
+    const row = document.createElement('div');
+    row.className = 'pricing-slot-row';
+    row.innerHTML = `
+      <input type="text" class="neu-raised slot-label-input" placeholder="e.g. 12 Hours (9 AM–9 PM)" maxlength="60">
+      <input type="text" class="neu-raised slot-price-input" placeholder="e.g. ₹8,000" maxlength="20">
+      <button type="button" class="remove-slot-btn" aria-label="Remove this timing option">×</button>
+    `;
+    const removeBtn = row.querySelector('.remove-slot-btn');
+    removeBtn.addEventListener('click', () => {
+      const allRows = pricingSlotsList.querySelectorAll('.pricing-slot-row');
+      if (allRows.length <= 1) return; // Always keep at least 1 row
+      row.remove();
+      updateSlotBuilderState();
+      updateSubmitState();
+    });
+    row.querySelectorAll('input').forEach(inp => {
+      inp.addEventListener('input', () => updateSubmitState());
+    });
+    return row;
+  }
+
+  function updateSlotBuilderState() {
+    if (!pricingSlotsList || !addPricingSlotBtn) return;
+    const count = pricingSlotsList.querySelectorAll('.pricing-slot-row').length;
+    const atMax = count >= MAX_PRICING_SLOTS;
+    addPricingSlotBtn.style.display = atMax ? 'none' : 'inline-flex';
+    if (pricingSlotLimitNote) pricingSlotLimitNote.style.display = atMax ? 'block' : 'none';
+    // Update remove button visibility: hide if only 1 row left
+    pricingSlotsList.querySelectorAll('.remove-slot-btn').forEach((btn, idx, arr) => {
+      btn.style.visibility = arr.length <= 1 ? 'hidden' : 'visible';
+    });
+  }
+
+  if (pricingSlotsList) {
+    // Start with one empty slot row
+    pricingSlotsList.appendChild(createSlotRow());
+    updateSlotBuilderState();
+  }
+
+  if (addPricingSlotBtn) {
+    addPricingSlotBtn.addEventListener('click', () => {
+      if (!pricingSlotsList) return;
+      const count = pricingSlotsList.querySelectorAll('.pricing-slot-row').length;
+      if (count >= MAX_PRICING_SLOTS) return;
+      pricingSlotsList.appendChild(createSlotRow());
+      updateSlotBuilderState();
+      // Focus the new label input
+      const rows = pricingSlotsList.querySelectorAll('.pricing-slot-row');
+      rows[rows.length - 1].querySelector('.slot-label-input')?.focus();
+    });
+  }
+  // ─────────────────────────────────────────────────────────────────────────
 
   // Instant Visual Feedback for Amenities and Best-For Checkbox Chips
   document.querySelectorAll('.checkbox-visual input[type="checkbox"]').forEach(cb => {
@@ -1380,13 +1513,25 @@ function initFormPage() {
         const areaVal = areaSel.value === 'Other' ? areaCustom.value : areaSel.value;
         const amens = Array.from(document.querySelectorAll('input[name="amenities"]:checked')).map(cb => cb.value);
         const bestFor = Array.from(document.querySelectorAll('input[name="best_for"]:checked')).map(cb => cb.value);
+
+        // Collect all non-empty pricing slot rows into { label, price } objects
+        const pricingSlots = [];
+        document.querySelectorAll('#pricingSlotsList .pricing-slot-row').forEach(row => {
+          const label = row.querySelector('.slot-label-input')?.value.trim() || '';
+          const price = row.querySelector('.slot-price-input')?.value.trim() || '';
+          if (label && price) {
+            pricingSlots.push({ label, price });
+          }
+        });
         
         const payload = {
           name: document.getElementById('formName').value,
           area: areaVal,
           address: document.getElementById('formAddress').value,
           capacity: parseInt(document.getElementById('formCapacity').value) || 50,
-          price_range: document.getElementById('formPrice').value,
+          // pricing_slots: new structured tariff format. price_range left null for new listings.
+          pricing_slots: pricingSlots,
+          price_range: null,
           phone: document.getElementById('formPhone').value,
           whatsapp: document.getElementById('formWhatsapp').value,
           description: document.getElementById('formDescription').value,

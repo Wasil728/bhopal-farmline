@@ -127,8 +127,17 @@
           </div>
 
           <div class="form-group">
-            <label for="formPrice">Tariff Range (Per 24h Session) *</label>
-            <input type="text" id="formPrice" class="neu-raised" required placeholder="e.g. ₹8,000 – ₹12,000">
+            <label>Pricing Options *</label>
+            <p class="body-copy" style="color: var(--ink-muted); font-size: 0.85rem; margin-bottom: var(--space-3);">
+              Add your own timing options with price — e.g. "6 Hours" for ₹5,000, "Full Day" for ₹15,000. Add up to 6.
+            </p>
+
+            <div id="pricingSlotsList" class="pricing-slots-list">
+              <!-- Slot rows injected here by JS, starting with one empty row -->
+            </div>
+
+            <button type="button" id="addPricingSlot" class="btn btn-secondary neu-raised" style="margin-top: var(--space-3);">+ Add Another Timing</button>
+            <p id="pricingSlotLimitNote" style="display:none; margin-top: var(--space-2); font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted);">Maximum 6 pricing options reached</p>
           </div>
         </div>
 
