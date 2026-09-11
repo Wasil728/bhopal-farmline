@@ -1529,9 +1529,9 @@ function initFormPage() {
           area: areaVal,
           address: document.getElementById('formAddress').value,
           capacity: parseInt(document.getElementById('formCapacity').value) || 50,
-          // pricing_slots: new structured tariff format. price_range left null for new listings.
+          // pricing_slots: new structured tariff format. price_range kept empty for new listings to satisfy NOT NULL constraint.
           pricing_slots: pricingSlots,
-          price_range: null,
+          price_range: '',
           phone: document.getElementById('formPhone').value,
           whatsapp: document.getElementById('formWhatsapp').value,
           description: document.getElementById('formDescription').value,
