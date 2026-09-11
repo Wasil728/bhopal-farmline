@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=20260828">
+  <link rel="stylesheet" href="css/style.css?v=20260912_rates">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body class="page-form">
@@ -61,9 +61,9 @@
     <div id="formWrapper" style="display: none;">
       
       <div class="form-header">
-        <span class="section-eyebrow">OWNER REGISTRATION PORTAL</span>
+        <span class="section-eyebrow">LIST YOUR PROPERTY</span>
         <h1>List Your Farmhouse</h1>
-        <p class="body-copy">Submit your property specifications. Every entry is verified via direct telephone before publication to maintain directory integrity.</p>
+        <p class="body-copy">Add your farmhouse to Bhopal's #1 directory. We verify every listing by phone before making it live to keep the platform genuine.</p>
       </div>
 
       <form id="farmhouseForm">
@@ -74,7 +74,7 @@
         <div class="form-section">
           <div class="form-section-title-wrap">
             <span class="section-eyebrow">01 — BASIC INFORMATION</span>
-            <h3>Property Identity</h3>
+            <h3>Basic Details</h3>
           </div>
 
           <div class="form-group">
@@ -84,9 +84,9 @@
 
           <div class="form-row">
             <div class="form-group">
-              <label for="formArea">Region / Road *</label>
+              <label for="formArea">Area / Location *</label>
               <select id="formArea" class="neu-raised" required>
-                <option value="" disabled selected>Select Region</option>
+                <option value="" disabled selected>Select Area</option>
                 <option value="Kolar Road">Kolar Road</option>
                 <option value="Ratibad">Ratibad</option>
                 <option value="Berasia Road">Berasia Road</option>
@@ -122,14 +122,14 @@
           </div>
 
           <div class="form-group">
-            <label for="formAddress">Complete Postal Address *</label>
-            <input type="text" id="formAddress" class="neu-raised" required placeholder="Full physical address for navigation">
+            <label for="formAddress">Farmhouse Address *</label>
+            <input type="text" id="formAddress" class="neu-raised" required placeholder="Full address or nearby landmark for directions">
           </div>
 
           <div class="form-group">
-            <label>Pricing Options *</label>
+            <label>Rates &amp; Timing Options *</label>
             <p class="body-copy" style="color: var(--ink-muted); font-size: 0.85rem; margin-bottom: var(--space-3);">
-              Add your own timing options with price — e.g. "6 Hours" for ₹5,000, "Full Day" for ₹15,000. Add up to 6.
+              Add your timing options with rates — e.g. "6 Hours (Day)" for ₹5,000, "24 Hours (Full Day)" for ₹15,000. Add up to 6.
             </p>
 
             <div id="pricingSlotsList" class="pricing-slots-list">
@@ -145,23 +145,23 @@
         <div class="form-section">
           <div class="form-section-title-wrap">
             <span class="section-eyebrow">02 — CONTACT DETAILS</span>
-            <h3>Communication Channels</h3>
+            <h3>Contact Numbers</h3>
           </div>
 
           <div class="form-group">
-            <label for="formSubmitterPhone">Verification Telephone (Confidential) *</label>
+            <label for="formSubmitterPhone">Your Phone Number (Confidential Verification) *</label>
             <input type="tel" id="formSubmitterPhone" class="neu-raised" required placeholder="10-digit mobile number" maxlength="10">
-            <small>Internal verification only. Never published in the public directory.</small>
+            <small>Used only for verification call. Never shown publicly.</small>
           </div>
 
           <div class="form-row">
             <div class="form-group">
-              <label for="formPhone">Public Inquiry Line *</label>
+              <label for="formPhone">Phone Number for Inquiries *</label>
               <input type="tel" id="formPhone" class="neu-raised" required placeholder="10-digit mobile" maxlength="10">
               <small>Displayed directly on your listing.</small>
             </div>
             <div class="form-group">
-              <label for="formWhatsapp">WhatsApp Contact *</label>
+              <label for="formWhatsapp">WhatsApp Number *</label>
               <input type="tel" id="formWhatsapp" class="neu-raised" required placeholder="10-digit mobile" maxlength="10">
               <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px;">
                 <input type="checkbox" id="sameAsPhone" style="width: 16px; height: 16px; margin: 0; accent-color: var(--accent);">
@@ -216,16 +216,16 @@
         <!-- Section 4 -->
         <div class="form-section">
           <div class="form-section-title-wrap">
-            <span class="section-eyebrow">04 — PROPERTY PHOTOGRAPHY</span>
-            <h3>Visual Documentation</h3>
+            <span class="section-eyebrow">04 — PHOTOS &amp; VIDEO</span>
+            <h3>Photos &amp; Video</h3>
           </div>
-          <p class="body-copy" style="color: var(--ink-muted); font-size: 0.85rem; margin-bottom: var(--space-4);">Upload up to 5 clear landscape photographs. Maximum 5MB per file.</p>
+          <p class="body-copy" style="color: var(--ink-muted); font-size: 0.85rem; margin-bottom: var(--space-4);">Upload up to 5 clear photos. Maximum 5MB each.</p>
 
           <div class="upload-area neu-raised" id="uploadArea">
             <div class="upload-icon">📷</div>
-            <p style="color: var(--ink-secondary); margin-bottom: var(--space-3); font-size: 0.9rem;">Select or drag property photographs</p>
+            <p style="color: var(--ink-secondary); margin-bottom: var(--space-3); font-size: 0.9rem;">Tap or drag photos here</p>
             <input type="file" id="formPhotos" name="photos" multiple accept="image/jpeg,image/png,image/webp" style="display:none;">
-            <button type="button" class="btn btn-secondary" onclick="document.getElementById('formPhotos').click()">Choose Photographs</button>
+            <button type="button" class="btn btn-secondary" onclick="document.getElementById('formPhotos').click()">Choose Photos</button>
           </div>
 
           <div class="upload-previews" id="uploadPreviews" style="display: none;"></div>
@@ -250,17 +250,17 @@
         <div class="form-section">
           <div class="form-section-title-wrap">
             <span class="section-eyebrow">05 — CONFIRMATION &amp; SUBMISSION</span>
-            <h3>Declaration</h3>
+            <h3>Verification Agreement</h3>
           </div>
           
           <div class="form-submit-row">
             <div class="permission-row">
               <input type="checkbox" id="formPermission">
               <label for="formPermission">
-                I affirm that I am the verified owner or authorized custodian of this property. All supplied details are authentic. I consent to receiving a verification telephone call prior to publication.
+                I confirm that I am the owner or authorized manager of this property. All details provided are genuine, and I agree to a quick phone call to verify this listing before it goes live.
               </label>
             </div>
-            <button type="submit" class="btn btn-primary btn-large" id="submitBtn" disabled>Submit Listing Application →</button>
+            <button type="submit" class="btn btn-primary btn-large" id="submitBtn" disabled>Submit Farmhouse Listing →</button>
           </div>
         </div>
 
@@ -304,7 +304,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js" defer></script>
-  <script src="js/data.js?v=20260828" defer></script>
-  <script src="js/main.js?v=20260828" defer></script>
+  <script src="js/data.js?v=20260912_rates" defer></script>
+  <script src="js/main.js?v=20260912_rates" defer></script>
 </body>
 </html>

@@ -114,6 +114,42 @@ function escapeHTML(str) {
   }[tag] || tag));
 }
 
+// Safely parse pricing slots from Array or JSON string
+function parsePricingSlots(raw) {
+  if (!raw) return [];
+  if (Array.isArray(raw)) return raw;
+  if (typeof raw === 'string') {
+    try {
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) return parsed;
+    } catch(e) {}
+  }
+  return [];
+}
+
+// User-friendly price formatting (e.g. 3000 -> ₹3,000)
+function formatPrice(val) {
+  if (val === null || val === undefined) return '';
+  let str = String(val).trim();
+  if (!str) return '';
+  
+  // Pure digits: e.g. "3000" -> "₹3,000"
+  if (/^\d+$/.test(str)) {
+    const num = parseInt(str, 10);
+    return `₹${num.toLocaleString('en-IN')}`;
+  }
+  // ₹ followed by digits without commas: e.g. "₹3000" -> "₹3,000"
+  if (/^₹\s*\d+$/.test(str)) {
+    const num = parseInt(str.replace(/[^0-9]/g, ''), 10);
+    return `₹${num.toLocaleString('en-IN')}`;
+  }
+  // Starts with number and lacks currency: e.g. "3000/day" -> "₹3000/day"
+  if (/^\d/.test(str) && !str.includes('₹') && !str.toLowerCase().includes('rs')) {
+    return `₹${str}`;
+  }
+  return str;
+}
+
 // URL Params
 function getUrlParam(param) {
   const urlParams = new URLSearchParams(window.location.search);
@@ -323,8 +359,8 @@ function initHeroVideoShowcase(farmhousesWithVideo) {
 
 // Fetch Listings from Supabase / Fallback
 async function fetchListings() {
-  const CACHE_KEY = 'bhopal_farmhouses_live_v4';
-  const CACHE_TIME = 'bhopal_farmhouses_live_v4_time';
+  const CACHE_KEY = 'bhopal_farmhouses_live_v5';
+  const CACHE_TIME = 'bhopal_farmhouses_live_v5_time';
   const TTL = 2 * 60 * 1000;
   
   const cached = safeSessionGet(CACHE_KEY);
@@ -358,7 +394,7 @@ async function fetchListings() {
           address: item.address,
           capacity: item.capacity,
           priceRange: item.price_range || item.priceRange,
-          pricingSlots: item.pricing_slots || [],
+          pricingSlots: parsePricingSlots(item.pricing_slots),
           amenities: item.amenities || [],
           bestFor: item.best_for || item.bestFor || [],
           description: item.description,
@@ -684,7 +720,7 @@ function createCardHTML(f, isNew = false) {
 
   // Determine price display: prefer pricing_slots starting price, fallback to priceRange
   let cardPriceDisplay = 'Price on request — call karo';
-  const slots = f.pricingSlots || [];
+  const slots = parsePricingSlots(f.pricingSlots || f.pricing_slots);
   if (slots.length > 0) {
     // Parse numeric value from each slot's price string and find the minimum
     let minVal = Infinity;
@@ -698,13 +734,13 @@ function createCardHTML(f, isNew = false) {
       }
     });
     if (minPriceStr) {
-      cardPriceDisplay = `Starting ${minPriceStr}`;
+      cardPriceDisplay = `Starting ${formatPrice(minPriceStr)}`;
     } else {
       // All prices are non-numeric — show the first slot price as-is
-      cardPriceDisplay = `Starting ${slots[0].price}`;
+      cardPriceDisplay = `Starting ${formatPrice(slots[0].price)}`;
     }
   } else if (f.priceRange) {
-    cardPriceDisplay = f.priceRange;
+    cardPriceDisplay = formatPrice(f.priceRange);
   }
   
   return `
@@ -724,7 +760,7 @@ function createCardHTML(f, isNew = false) {
             <span class="spec-val">👥 Up to ${f.capacity || '50'}</span>
           </div>
           <div class="spec-col">
-            <span class="spec-label">Tariff</span>
+            <span class="spec-label">Rates</span>
             <span class="spec-val spec-price">💰 ${escapeHTML(cardPriceDisplay)}</span>
           </div>
         </div>
@@ -809,6 +845,7 @@ async function initDetailPage() {
           address: data.address,
           capacity: data.capacity,
           priceRange: data.price_range || data.priceRange,
+          pricingSlots: parsePricingSlots(data.pricing_slots),
           amenities: data.amenities || [],
           bestFor: data.best_for || data.bestFor || [],
           description: data.description,
@@ -827,6 +864,9 @@ async function initDetailPage() {
   if (!farm) {
     const list = window.farmhouses || [];
     farm = list.find(f => f.id === id);
+    if (farm) {
+      farm.pricingSlots = parsePricingSlots(farm.pricingSlots || farm.pricing_slots);
+    }
   }
   
   if (!farm) {
@@ -854,7 +894,7 @@ function populateDetailPage(farm) {
   document.title = `${farm.name} — Bhopal Farmline`;
 
   // Dynamic SEO & Open Graph Metadata
-  const dynamicDesc = `${farm.name} in ${farm.area}, Bhopal. Capacity: up to ${farm.capacity} guests. Tariff: ${farm.priceRange || 'Contact Owner'}. Direct owner contact with zero booking fees.`;
+  const dynamicDesc = `${farm.name} in ${farm.area}, Bhopal. Capacity: up to ${farm.capacity} guests. Rates: ${farm.priceRange || 'Contact Owner'}. Direct owner contact with zero booking fees.`;
   const metaDesc = document.querySelector('meta[name="description"]');
   if (metaDesc) metaDesc.content = dynamicDesc;
 
@@ -878,30 +918,32 @@ function populateDetailPage(farm) {
   if (areaEl) areaEl.textContent = `📍 ${farm.area}`;
   if (nameEl) nameEl.textContent = farm.name;
   
-  // Badges — capacity only (pricing handled by the slots grid below)
+  // Badges — capacity only (pricing handled by the rates grid below)
   const badgesEl = document.getElementById('detailBadges');
   if (badgesEl) {
     badgesEl.innerHTML = `<span class="stamp-badge">👥 Up to ${farm.capacity} Guests</span>`;
   }
 
-  // Pricing Slots Grid — show structured tariff table or fallback to legacy priceRange
+  // Pricing Slots Grid — show structured rates table or fallback to legacy priceRange
   const pricingGrid = document.getElementById('pricingSlotsGrid');
   const pricingDisplay = document.getElementById('pricingSlotsDisplay');
   if (pricingGrid) {
-    const slots = farm.pricingSlots || [];
+    const slots = parsePricingSlots(farm.pricingSlots || farm.pricing_slots);
     if (slots.length > 0) {
       pricingGrid.innerHTML = slots.map(slot => `
         <div class="pricing-slot-card">
           <span class="pricing-slot-label">${escapeHTML(slot.label)}</span>
-          <span class="pricing-slot-price">${escapeHTML(slot.price)}</span>
+          <span class="pricing-slot-price">${escapeHTML(formatPrice(slot.price))}</span>
         </div>`).join('');
+      if (pricingDisplay) pricingDisplay.style.display = 'block';
     } else if (farm.priceRange) {
-      // Legacy fallback: show the old single price_range as a single badge
+      // Legacy fallback: show the old single price_range as a single card
       pricingGrid.innerHTML = `
         <div class="pricing-slot-card">
-          <span class="pricing-slot-label">Tariff / Day</span>
-          <span class="pricing-slot-price">${escapeHTML(farm.priceRange)}</span>
+          <span class="pricing-slot-label">Standard Rate</span>
+          <span class="pricing-slot-price">${escapeHTML(formatPrice(farm.priceRange))}</span>
         </div>`;
+      if (pricingDisplay) pricingDisplay.style.display = 'block';
     } else {
       // Neither exists — hide the block entirely
       if (pricingDisplay) pricingDisplay.style.display = 'none';
