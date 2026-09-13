@@ -48,7 +48,8 @@ window.amenityFilters = [
   "Tables & Chairs",
   "Tents",
   "Parking",
-  "Decoration Service"
+  "Decoration Service",
+  "Security/CCTV"
 ];
 
 // 4. Amenity Icons — emoji mapping for badges and filters
@@ -63,7 +64,8 @@ window.amenityIcons = {
   "Tables & Chairs":     "🪑",
   "Tents":               "⛺",
   "Parking":             "🅿️",
-  "Decoration Service":  "🎊"
+  "Decoration Service":  "🎊",
+  "Security/CCTV":       "🔒"
 };
 
 // 5. Event Suitability Options & Icons

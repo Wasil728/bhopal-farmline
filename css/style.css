@@ -1734,6 +1734,71 @@ p, .body-copy {
   }
 }
 
+/* ============================================================
+   FAQ BUILDER — Form builder rows (add-farmhouse.html)
+   Based on the pricing-slot-row pattern for visual consistency
+   ============================================================ */
+.faq-builder-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.faq-builder-row {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--bg-elevated);
+  border-radius: var(--neu-radius-sm);
+  position: relative;
+  box-shadow: 2px 2px 6px var(--neu-shadow-dark), -2px -2px 6px var(--neu-shadow-light);
+}
+
+.faq-question-input {
+  font-weight: 600;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink-primary);
+  padding: 10px var(--space-4);
+  min-height: 44px;
+  padding-right: 44px; /* space for × button */
+}
+
+.faq-answer-input {
+  resize: vertical;
+  min-height: 50px;
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  color: var(--ink-primary);
+  padding: 10px var(--space-4);
+  line-height: 1.5;
+}
+
+.remove-faq-btn {
+  position: absolute;
+  top: var(--space-2);
+  right: var(--space-2);
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2rem;
+  color: var(--ink-muted);
+  line-height: 1;
+  padding: 6px;
+  min-width: 32px;
+  min-height: 32px;
+  border-radius: var(--neu-radius-sm);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: color var(--transition-fast), background var(--transition-fast);
+}
+.remove-faq-btn:hover {
+  color: var(--error);
+  background: rgba(192, 57, 43, 0.08);
+}
+
 /* FAQ */
 .faq-item {
   border-bottom: 1px solid var(--rule-light);

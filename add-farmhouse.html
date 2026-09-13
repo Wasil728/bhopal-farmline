@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=20260912_rates">
+  <link rel="stylesheet" href="css/style.css?v=20260913_faq">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body class="page-form">
@@ -197,6 +197,7 @@
               <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Tents"><span>⛺</span> Tents</label>
               <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Parking"><span>🅿️</span> Parking</label>
               <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Decoration Service"><span>🎊</span> Decoration Service</label>
+              <label class="checkbox-visual neu-raised"><input type="checkbox" name="amenities" value="Security/CCTV"><span>🔒</span> Security/CCTV</label>
             </div>
           </div>
 
@@ -213,10 +214,28 @@
           </div>
         </div>
 
-        <!-- Section 4 -->
+        <!-- Section 4 — FAQ Builder -->
         <div class="form-section">
           <div class="form-section-title-wrap">
-            <span class="section-eyebrow">04 — PHOTOS &amp; VIDEO</span>
+            <span class="section-eyebrow">04 — RULES &amp; COMMON QUESTIONS</span>
+            <h3>Property FAQs</h3>
+          </div>
+          <p class="body-copy" style="color: var(--ink-muted); font-size: 0.85rem; margin-bottom: var(--space-4);">
+            Add any rules, charges, or common questions guests ask — e.g. alcohol policy, cooking rules, extra charges, security. This helps guests decide before they even message you. <em>Optional, but strongly recommended.</em>
+          </p>
+
+          <div id="faqBuilderList" class="faq-builder-list">
+            <!-- FAQ rows injected here by JS, starting with 2 empty rows pre-filled with common prompts -->
+          </div>
+
+          <button type="button" id="addFaqRow" class="btn btn-secondary neu-raised" style="margin-top: var(--space-3);">+ Add Another Question</button>
+          <p id="faqRowLimitNote" style="display:none; margin-top: var(--space-2); font-family: var(--font-mono); font-size: 0.72rem; color: var(--ink-muted);">Maximum 8 questions reached</p>
+        </div>
+
+        <!-- Section 5 — Photos & Video -->
+        <div class="form-section">
+          <div class="form-section-title-wrap">
+            <span class="section-eyebrow">05 — PHOTOS &amp; VIDEO</span>
             <h3>Photos &amp; Video</h3>
           </div>
           <p class="body-copy" style="color: var(--ink-muted); font-size: 0.85rem; margin-bottom: var(--space-4);">Upload up to 5 clear photos. Maximum 5MB each.</p>
@@ -246,10 +265,10 @@
           </div>
         </div>
 
-        <!-- Section 5 -->
+        <!-- Section 6 — Confirmation -->
         <div class="form-section">
           <div class="form-section-title-wrap">
-            <span class="section-eyebrow">05 — CONFIRMATION &amp; SUBMISSION</span>
+            <span class="section-eyebrow">06 — CONFIRMATION &amp; SUBMISSION</span>
             <h3>Verification Agreement</h3>
           </div>
           
@@ -304,7 +323,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js" defer></script>
-  <script src="js/data.js?v=20260912_rates" defer></script>
-  <script src="js/main.js?v=20260912_rates" defer></script>
+  <script src="js/data.js?v=20260913_faq" defer></script>
+  <script src="js/main.js?v=20260913_faq" defer></script>
 </body>
 </html>

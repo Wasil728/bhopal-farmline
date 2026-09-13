@@ -1322,6 +1322,70 @@ function initFormPage() {
   }
   // ─────────────────────────────────────────────────────────────────────────
 
+  // ── FAQ BUILDER ───────────────────────────────────────────────────────────
+  // Maximum 8 FAQ rows per farmhouse (matches faqs JSONB schema limit).
+  // FAQs are fully optional — the form submits fine with zero filled rows.
+  // Only rows where BOTH question AND answer are non-empty are submitted.
+  const MAX_FAQ_ROWS = 8;
+  const faqBuilderList = document.getElementById('faqBuilderList');
+  const addFaqRowBtn = document.getElementById('addFaqRow');
+  const faqRowLimitNote = document.getElementById('faqRowLimitNote');
+
+  // Common Bhopal farmhouse question prompts — shown as placeholder text (not values)
+  const FAQ_PROMPTS = [
+    { q: 'Kya alcohol allowed hai?',           a: 'e.g. Haan/Nahi, and any conditions' },
+    { q: 'Cooking ke liye kya available hai?', a: 'e.g. Gas cylinder khud laana hoga / included hai' },
+    { q: 'Koi extra charges hain?',            a: 'e.g. Cleaning charge, extra rooms, decoration' },
+    { q: 'Security/CCTV hai?',                 a: 'e.g. 24/7 surveillance available' }
+  ];
+
+  function createFaqRow(promptIndex) {
+    const row = document.createElement('div');
+    row.className = 'faq-builder-row';
+    const prompt = FAQ_PROMPTS[promptIndex] || { q: 'e.g. Koi aur sawaal?', a: 'e.g. Jawab yahan likhein' };
+    row.innerHTML = `
+      <input type="text" class="neu-raised faq-question-input" placeholder="${escapeHTML(prompt.q)}" maxlength="200">
+      <textarea class="neu-raised faq-answer-input" rows="2" placeholder="${escapeHTML(prompt.a)}" maxlength="200"></textarea>
+      <button type="button" class="remove-faq-btn" aria-label="Remove this question">×</button>
+    `;
+    const removeBtn = row.querySelector('.remove-faq-btn');
+    removeBtn.addEventListener('click', () => {
+      row.remove();
+      updateFaqBuilderState();
+    });
+    return row;
+  }
+
+  function updateFaqBuilderState() {
+    if (!faqBuilderList || !addFaqRowBtn) return;
+    const count = faqBuilderList.querySelectorAll('.faq-builder-row').length;
+    const atMax = count >= MAX_FAQ_ROWS;
+    addFaqRowBtn.style.display = atMax ? 'none' : 'inline-flex';
+    if (faqRowLimitNote) faqRowLimitNote.style.display = atMax ? 'block' : 'none';
+  }
+
+  if (faqBuilderList) {
+    // Start with 2 pre-prompted empty rows (prompts 0 & 1)
+    faqBuilderList.appendChild(createFaqRow(0));
+    faqBuilderList.appendChild(createFaqRow(1));
+    updateFaqBuilderState();
+  }
+
+  if (addFaqRowBtn) {
+    addFaqRowBtn.addEventListener('click', () => {
+      if (!faqBuilderList) return;
+      const count = faqBuilderList.querySelectorAll('.faq-builder-row').length;
+      if (count >= MAX_FAQ_ROWS) return;
+      // Use the next prompt if available, otherwise fallback
+      faqBuilderList.appendChild(createFaqRow(count));
+      updateFaqBuilderState();
+      // Focus the new question input
+      const rows = faqBuilderList.querySelectorAll('.faq-builder-row');
+      rows[rows.length - 1].querySelector('.faq-question-input')?.focus();
+    });
+  }
+  // ─────────────────────────────────────────────────────────────────────────
+
   // Instant Visual Feedback for Amenities and Best-For Checkbox Chips
   document.querySelectorAll('.checkbox-visual input[type="checkbox"]').forEach(cb => {
     const updateVisual = () => {
@@ -1565,6 +1629,16 @@ function initFormPage() {
             pricingSlots.push({ label, price });
           }
         });
+
+        // Collect all non-empty FAQ rows into { q, a } objects — fully optional, partial rows are skipped
+        const faqs = [];
+        document.querySelectorAll('#faqBuilderList .faq-builder-row').forEach(row => {
+          const q = row.querySelector('.faq-question-input')?.value.trim() || '';
+          const a = row.querySelector('.faq-answer-input')?.value.trim() || '';
+          if (q && a) {
+            faqs.push({ q, a });
+          }
+        });
         
         const payload = {
           name: document.getElementById('formName').value,
@@ -1579,6 +1653,7 @@ function initFormPage() {
           description: document.getElementById('formDescription').value,
           amenities: amens,
           best_for: bestFor,
+          faqs: faqs,
           image_urls: imageUrls,
           video_url: videoUrl,
           owner_confirmed: true,
