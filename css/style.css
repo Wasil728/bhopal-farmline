@@ -457,11 +457,17 @@ p, .body-copy {
 
 .hero-meta-tag {
   font-family: var(--font-mono);
-  font-size: 0.68rem;
-  letter-spacing: 0.14em;
+  font-size: 0.76rem;   /* was 0.68rem (≈11px) — raised to ≥12px for readability */
+  letter-spacing: 0.1em;
   text-transform: uppercase;
   color: var(--ink-muted);
   line-height: 1;
+}
+
+/* Issue 3 — long all-caps text harder to read; use sentence case for the tagline */
+.hero-meta-tag--sentence {
+  text-transform: none;
+  letter-spacing: 0.04em;
 }
 
 .hero-editorial {
@@ -555,10 +561,11 @@ p, .body-copy {
 
 .stat-label {
   font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-size: 0.75rem;   /* was 0.62rem (≈10px) — raised for legibility alongside large numbers */
+  letter-spacing: 0.06em;
+  text-transform: none; /* was uppercase; sentence-case reads faster */
   color: var(--ink-muted);
+  font-weight: 500;
 }
 
 .hero-video-col {
@@ -782,6 +789,13 @@ p, .body-copy {
   display: flex;
   gap: var(--space-2);
   flex-wrap: wrap;
+  /* Issue 6: cap at ~3 rows visible so 23 area buttons don't form a wall */
+  max-height: calc(44px * 3 + var(--space-2) * 2); /* 3 rows × button height + 2 gaps */
+  overflow-y: auto;
+  padding-bottom: 2px; /* prevent shadow clip on last row */
+  /* fade-out hint that more items are scrollable */
+  -webkit-mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
+  mask-image: linear-gradient(to bottom, black 70%, transparent 100%);
 }
 
 .amenity-filter-grid {
@@ -1418,9 +1432,9 @@ p, .body-copy {
 
 .footer-bottom p {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 0.76rem;   /* was 0.65rem (≈10px) — raised to meet 12px minimum */
+  letter-spacing: 0.06em;
+  text-transform: none; /* sentence case; reduces type-scale fragmentation */
   color: var(--ink-muted);
   text-align: center;
 }

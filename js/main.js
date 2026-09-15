@@ -598,12 +598,15 @@ function updateStats() {
 }
 
 // Render Recently Added Row
+// Issue 5 fix: only show this section when there are enough listings that
+// the "Recently Added" slice (first 4) is genuinely distinct from the full
+// directory. With ≤4 listings it would duplicate the All Farmhouses view.
 function renderNewListings() {
   const section = document.getElementById('newListingsSection');
   const grid = document.getElementById('newListingsGrid');
   if (!section || !grid) return;
   
-  if (allFarmhouses.length >= 2) {
+  if (allFarmhouses.length > 4) {
     section.style.display = 'block';
     grid.innerHTML = allFarmhouses.slice(0, 4).map(f => createCardHTML(f, true)).join('');
     initCardAnimations();
@@ -655,7 +658,7 @@ function applyFilters() {
   
   const countDisplay = document.getElementById('listingsCount');
   if (countDisplay) {
-    countDisplay.textContent = `${filteredFarmhouses.length} farmhouse${filteredFarmhouses.length !== 1 ? 's' : ''} mile`;
+    countDisplay.textContent = `${filteredFarmhouses.length} farmhouse${filteredFarmhouses.length !== 1 ? 's' : ''} listed`;
   }
   
   renderCardGrid();
