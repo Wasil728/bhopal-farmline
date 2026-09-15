@@ -26,7 +26,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
   <link rel="dns-prefetch" href="https://images.unsplash.com">
-  <link rel="stylesheet" href="css/style.css?v=20260915_ux">
+  <link rel="stylesheet" href="css/style.css?v=20260915_ux2">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body class="page-detail">
@@ -118,16 +118,25 @@
       </div>
       
       <div id="faqsSection" class="detail-section-block" style="display:none;">
-        <span class="section-eyebrow">05 — FREQUENTLY ASKED QUESTIONS</span>
+        <!-- Issue 8: was '05' — when reviews section is hidden the sequence jumped
+             03 → 05. Changed to '04' so visible numbering is always sequential. -->
+        <span class="section-eyebrow">04 — FREQUENTLY ASKED QUESTIONS</span>
         <h3>Helpful Questions</h3>
         <div id="faqsList"></div>
       </div>
       
       <div class="detail-section-block">
-        <span class="section-eyebrow">06 — LOCATION &amp; DIRECTIONS</span>
+        <span class="section-eyebrow">05 — LOCATION &amp; DIRECTIONS</span>
         <h3>Address &amp; Map</h3>
         <p id="detailAddress" class="body-copy" style="margin-bottom: var(--space-4);"></p>
-        <a id="mapLink" href="#" target="_blank" rel="noopener" class="btn btn-secondary" style="display: inline-flex; width: auto;">Open in Google Maps 📍</a>
+        <!-- Issue 11: replaced 📍 emoji with inline SVG for icon-style consistency -->
+        <a id="mapLink" href="#" target="_blank" rel="noopener" class="btn btn-secondary" style="display: inline-flex; width: auto; gap: 8px; align-items: center;">
+          <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+            <circle cx="12" cy="9" r="2.5"/>
+          </svg>
+          Open in Google Maps
+        </a>
       </div>
 
     </div>
@@ -150,7 +159,9 @@
           <p>Bhopal's free community directory for finding, comparing, and directly contacting farmhouse owners.</p>
         </div>
         <div class="footer-col">
-          <h3>Quick Links</h3>
+          <!-- Issue 6: was h3 with no preceding h2 — skipped heading level. Changed to h2;
+               CSS targets .footer-col h2 to preserve visual size (same as the old h3 rule). -->
+          <h2 class="footer-col-heading">Quick Links</h2>
           <ul class="footer-links">
             <li><a href="index.html">Browse All</a></li>
             <li><a href="add-farmhouse.html">List Your Farmhouse</a></li>
@@ -159,13 +170,13 @@
           </ul>
         </div>
         <div class="footer-col">
-          <h3>Contact</h3>
+          <h2 class="footer-col-heading">Contact</h2>
           <p>For support or verification:</p>
           <p><a href="mailto:support@bhopalfarmline.in" class="footer-contact-link">support@bhopalfarmline.in</a></p>
         </div>
       </div>
       <div class="footer-bottom">
-        <p>&copy; 2026 Bhopal Farmline — Free Community Directory</p>
+        <p>© 2026 Bhopal Farmline — Free Community Directory</p>
       </div>
     </div>
   </footer>
@@ -173,7 +184,7 @@
   <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
-  <script src="js/data.js?v=20260915_ux" defer></script>
-  <script src="js/main.js?v=20260915_ux" defer></script>
+  <script src="js/data.js?v=20260915_ux2" defer></script>
+  <script src="js/main.js?v=20260915_ux2" defer></script>
 </body>
 </html>

@@ -1245,20 +1245,20 @@ p, .body-copy {
 }
 
 .btn-call, .btn--call {
-  background: var(--bg-base);
-  color: var(--ink-secondary);
-  box-shadow: 6px 6px 12px var(--neu-shadow-dark),
-              -6px -6px 12px var(--neu-shadow-light);
+  /* Issue 10: was plain gray ghost — now warm blue tint for equal discoverability with WhatsApp */
+  background: #e0effe;
+  color: #1e4d8c;
+  border: 1.5px solid #b8d5f8;
+  box-shadow: 5px 5px 12px #c4d8ee, -5px -5px 12px #ffffff;
   flex: 1;
 }
 .btn-call:hover, .btn--call:hover {
-  color: var(--ink-primary);
-  box-shadow: 8px 8px 16px var(--neu-shadow-dark),
-              -8px -8px 16px var(--neu-shadow-light);
+  background: #c7e0fb;
+  color: #163e72;
+  box-shadow: 7px 7px 15px #b0c8e0, -7px -7px 15px #ffffff;
 }
 .btn-call:active, .btn--call:active {
-  box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
-              inset -4px -4px 8px var(--neu-shadow-light);
+  box-shadow: inset 3px 3px 6px #b0c8e0, inset -3px -3px 6px #f0f8ff;
 }
 
 .btn-large, .btn--large {
@@ -1327,13 +1327,13 @@ p, .body-copy {
    BACK TO TOP
    ============================================================ */
 .back-to-top {
-  position: fixed;
-  bottom: var(--space-6);
+  position: fixed;           /* Issue 7: always anchored bottom-right, never inline */
+  bottom: calc(var(--space-6) + env(safe-area-inset-bottom, 0px));
   right: var(--space-6);
-  width: 44px;
-  height: 44px;
+  width: 48px;
+  height: 48px;
   background: var(--bg-base);
-  border: none;
+  border: 1.5px solid var(--rule-light);  /* subtle border aids discoverability */
   border-radius: 50%;
   color: var(--ink-secondary);
   font-size: 1rem;
@@ -1367,9 +1367,9 @@ p, .body-copy {
   align-items: center;
   gap: 6px;
   font-family: var(--font-mono);
-  font-size: 0.7rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
+  font-size: 0.76rem;   /* was 0.7rem (≈11px) — raised to ≥12px (Issue 2) */
+  letter-spacing: 0.06em;
+  text-transform: none; /* sentence case reduces type-scale fragmentation (Issue 1) */
   color: var(--ink-muted);
   transition: color var(--transition-fast);
 }
@@ -1401,7 +1401,11 @@ p, .body-copy {
   max-width: 48ch;
 }
 
-.footer-col h3 {
+.footer-col h3,
+.footer-col h2,
+.footer-col-heading {
+  /* Issue 6: selector broadened to cover h2 (correct heading level) alongside
+     legacy h3 in other pages, and the .footer-col-heading utility class */
   font-family: var(--font-mono);
   font-size: 0.68rem;
   letter-spacing: 0.16em;
@@ -1564,8 +1568,8 @@ p, .body-copy {
 
 .best-for-tag {
   font-family: var(--font-mono);
-  font-size: 0.65rem;
-  padding: 4px 10px;
+  font-size: 0.76rem;   /* was 0.65rem (≈10px) — raised to ≥12px (Issue 5) */
+  padding: 5px 10px;
   border: 1px solid var(--rule-light);
   color: var(--ink-secondary);
   background: var(--bg-page);
@@ -1665,10 +1669,10 @@ p, .body-copy {
 
 .pricing-slot-label {
   font-family: var(--font-mono);
-  font-size: 0.7rem;
+  font-size: 0.76rem;   /* was 0.7rem (≈11px) — raised to ≥12px (Issue 4) */
   color: var(--ink-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  text-transform: none; /* sentence case; labels are descriptive phrases, not short codes */
+  letter-spacing: 0.03em;
   margin-bottom: 4px;
   display: block;
 }
@@ -1826,16 +1830,23 @@ p, .body-copy {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: var(--space-4) 0;
+  padding: var(--space-4) var(--space-3); /* Issue 9: horizontal padding so bg hover is contained */
+  margin: 0 calc(-1 * var(--space-3));    /* pull to align text with edge despite added padding */
+  width: calc(100% + var(--space-3) * 2);
   background: none;
   border: none;
+  border-radius: var(--neu-radius-sm);
   color: var(--ink-primary);
   font-family: var(--font-display);
   font-size: 1.15rem;
   font-weight: 600;
   cursor: pointer;
   text-align: left;
-  gap: var(--space-4);
+  gap: var(--space-3);     /* tighter gap: chevron closer to text (was --space-4) */
+  transition: background var(--transition-fast);
+}
+.faq-trigger:hover {
+  background: var(--bg-elevated); /* hover bg defines the hit area clearly */
 }
 
 .faq-icon {
