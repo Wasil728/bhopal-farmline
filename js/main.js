@@ -716,9 +716,9 @@ function createCardHTML(f, isNew = false) {
     ? `<img src="${escapeHTML(imgUrl)}" class="card-image" loading="lazy" decoding="async" width="400" height="220" alt="${escapeHTML(f.name)}">`
     : `<div class="card-image-placeholder">🏡</div>`;
     
-  const waMsg = encodeURIComponent(`Hi! I saw ${f.name} on Bhopal Farmline and want to enquire about availability.`);
+  const message = `Hello apka ${f.name} Bhopal Farmline website pe dekha abhi, available he kya?`;
   const waNumber = String(f.whatsapp || f.phone || '').replace(/[^0-9]/g, '');
-  const waLink = `https://wa.me/91${waNumber.slice(-10)}?text=${waMsg}`;
+  const waLink = `https://wa.me/91${waNumber.slice(-10)}?text=${encodeURIComponent(message)}`;
   const callLink = `tel:+91${String(f.phone || '').slice(-10)}`;
 
   // Determine price display: prefer pricing_slots starting price, fallback to priceRange
@@ -982,9 +982,9 @@ function populateDetailPage(farm) {
   const callBtn = document.getElementById('detailCall');
   
   if (waBtn) {
-    const msg = encodeURIComponent(`Hi! I saw ${farm.name} on Bhopal Farmline and want to check availability.`);
+    const message = `Hello apka ${farm.name} Bhopal Farmline website pe dekha abhi, available he kya?`;
     const num = String(farm.whatsapp || farm.phone || '').replace(/[^0-9]/g, '').slice(-10);
-    waBtn.href = `https://wa.me/91${num}?text=${msg}`;
+    waBtn.href = `https://wa.me/91${num}?text=${encodeURIComponent(message)}`;
     waBtn.onclick = () => {
       trackContactClick(farm.id, farm.name, 'whatsapp');
     };
