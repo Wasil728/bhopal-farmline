@@ -1211,12 +1211,27 @@ function initFormPage() {
     });
   }
   
-  // Phone Restrictions (10 digits)
+  // Phone Restrictions (10 digits with smart country-code stripping)
+  function sanitizePhone(val) {
+    let digits = String(val || '').replace(/[^0-9]/g, '');
+    if (digits.length === 12 && digits.startsWith('91')) {
+      digits = digits.slice(2);
+    } else if (digits.length === 11 && digits.startsWith('0')) {
+      digits = digits.slice(1);
+    }
+    return digits.slice(0, 10);
+  }
+
   ['formSubmitterPhone', 'formPhone', 'formWhatsapp'].forEach(id => {
     const input = document.getElementById(id);
     if (input) {
       input.addEventListener('input', () => {
-        input.value = input.value.replace(/[^0-9]/g, '').slice(0, 10);
+        input.value = sanitizePhone(input.value);
+      });
+      input.addEventListener('paste', () => {
+        setTimeout(() => {
+          input.value = sanitizePhone(input.value);
+        }, 10);
       });
     }
   });
@@ -1570,6 +1585,42 @@ function initFormPage() {
       }
       
       const submitBtn = document.getElementById('submitBtn');
+      
+      // Client-side validations before beginning file uploads
+      const nameVal = (document.getElementById('formName')?.value || '').trim();
+      if (nameVal.length < 3) {
+        alert('Please enter a valid Farmhouse Name (at least 3 characters).');
+        document.getElementById('formName')?.focus();
+        return;
+      }
+
+      const phoneVal = sanitizePhone(document.getElementById('formPhone')?.value);
+      if (phoneVal.length !== 10) {
+        alert('Please enter a valid 10-digit Phone Number for inquiries (e.g. 98XXXXXXXX).');
+        document.getElementById('formPhone')?.focus();
+        return;
+      }
+
+      const waVal = sanitizePhone(document.getElementById('formWhatsapp')?.value);
+      if (waVal.length !== 10) {
+        alert('Please enter a valid 10-digit WhatsApp Number (e.g. 98XXXXXXXX).');
+        document.getElementById('formWhatsapp')?.focus();
+        return;
+      }
+
+      const submitterPhoneVal = sanitizePhone(document.getElementById('formSubmitterPhone')?.value);
+      if (submitterPhoneVal.length !== 10) {
+        alert('Please enter your 10-digit Phone Number for verification (e.g. 98XXXXXXXX).');
+        document.getElementById('formSubmitterPhone')?.focus();
+        return;
+      }
+
+      if (selectedFiles.length === 0) {
+        alert('Please select at least 1 photo of your farmhouse (up to 5 photos). Photos are required to publish your listing.');
+        document.getElementById('uploadArea')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
       if (submitBtn) {
         submitBtn.disabled = true;
         submitBtn.textContent = 'Submitting...';
@@ -1577,16 +1628,32 @@ function initFormPage() {
       
       try {
         let imageUrls = [];
-        if (selectedFiles.length > 0 && window.imageCompression && supabaseClient) {
-          for (let file of selectedFiles) {
-            if (submitBtn) submitBtn.textContent = 'Compressing & uploading photos...';
-            const compressed = await imageCompression(file, { maxSizeMB: 0.2, maxWidthOrHeight: 1280, useWebWorker: true });
-            const filename = `farm_${Date.now()}_${Math.random().toString(36).substring(7)}.jpg`;
-            const { error: uploadErr } = await supabaseClient.storage.from('farmhouse-photos').upload(filename, compressed);
-            if (!uploadErr) {
-              const { data: pubData } = supabaseClient.storage.from('farmhouse-photos').getPublicUrl(filename);
-              if (pubData?.publicUrl) imageUrls.push(pubData.publicUrl);
+        if (selectedFiles.length > 0 && supabaseClient) {
+          for (let i = 0; i < selectedFiles.length; i++) {
+            const file = selectedFiles[i];
+            if (submitBtn) submitBtn.textContent = `Uploading photo ${i + 1} of ${selectedFiles.length}...`;
+            
+            let fileToUpload = file;
+            if (typeof imageCompression === 'function') {
+              try {
+                fileToUpload = await imageCompression(file, { maxSizeMB: 0.3, maxWidthOrHeight: 1280, useWebWorker: false });
+              } catch (compErr) {
+                console.warn('Image compression fallback to original file:', compErr);
+                fileToUpload = file;
+              }
             }
+
+            const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().replace(/[^a-z0-9]/g, '');
+            const safeExt = ['jpg', 'jpeg', 'png', 'webp', 'avif'].includes(ext) ? (ext === 'jpeg' ? 'jpg' : ext) : 'jpg';
+            const filename = `farm_${Date.now()}_${Math.random().toString(36).substring(7)}.${safeExt}`;
+            
+            const { error: uploadErr } = await supabaseClient.storage.from('farmhouse-photos').upload(filename, fileToUpload);
+            if (uploadErr) {
+              console.error('Photo upload error:', uploadErr);
+              throw new Error(`Failed to upload photo "${file.name}": ${uploadErr.message}`);
+            }
+            const { data: pubData } = supabaseClient.storage.from('farmhouse-photos').getPublicUrl(filename);
+            if (pubData?.publicUrl) imageUrls.push(pubData.publicUrl);
           }
         }
 
@@ -1595,14 +1662,14 @@ function initFormPage() {
         if (selectedVideoFile && supabaseClient) {
           try {
             if (submitBtn) submitBtn.textContent = 'Uploading property video...';
-            const ext = selectedVideoFile.name.split('.').pop() || 'mp4';
+            const ext = (selectedVideoFile.name.split('.').pop() || 'mp4').toLowerCase().replace(/[^a-z0-9]/g, '');
             const vFilename = `video_${Date.now()}_${Math.random().toString(36).substring(7)}.${ext}`;
             
             // Try dedicated bucket first
             let uploadRes = await supabaseClient.storage.from('farmhouse-videos').upload(vFilename, selectedVideoFile);
             let targetBucket = 'farmhouse-videos';
             
-            // If farmhouse-videos bucket doesn't exist or fails, fallback to active farmhouse-photos bucket
+            // Fallback to farmhouse-photos bucket if dedicated bucket not available
             if (uploadRes.error) {
               uploadRes = await supabaseClient.storage.from('farmhouse-photos').upload(vFilename, selectedVideoFile);
               targetBucket = 'farmhouse-photos';
@@ -1644,15 +1711,14 @@ function initFormPage() {
         });
         
         const payload = {
-          name: document.getElementById('formName').value,
+          name: nameVal,
           area: areaVal,
           address: document.getElementById('formAddress').value,
           capacity: parseInt(document.getElementById('formCapacity').value) || 50,
-          // pricing_slots: new structured tariff format. price_range kept empty for new listings to satisfy NOT NULL constraint.
           pricing_slots: pricingSlots,
           price_range: '',
-          phone: document.getElementById('formPhone').value,
-          whatsapp: document.getElementById('formWhatsapp').value,
+          phone: phoneVal,
+          whatsapp: waVal,
           description: document.getElementById('formDescription').value,
           amenities: amens,
           best_for: bestFor,
@@ -1691,10 +1757,15 @@ function initFormPage() {
         }
       } catch (err) {
         console.error("Submission error:", err);
-        alert("Submission failed: " + err.message);
+        let userMsg = err.message || "An unexpected error occurred.";
+        if (userMsg.includes("row-level security policy") || userMsg.includes("42501")) {
+          userMsg = "Database validation check failed. Please ensure the farmhouse name is at least 3 characters, phone numbers are 10 digits, and at least 1 photo is uploaded.";
+        }
+        alert("Submission failed: " + userMsg);
         if (submitBtn) {
           submitBtn.disabled = false;
-          submitBtn.textContent = 'Submit Listing';
+          submitBtn.textContent = 'Submit Farmhouse Listing →';
+          updateSubmitState();
         }
       }
     });

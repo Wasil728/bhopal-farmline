@@ -79,7 +79,7 @@
 
           <div class="form-group">
             <label for="formName">Farmhouse Name *</label>
-            <input type="text" id="formName" class="neu-raised" required placeholder="e.g. Green Valley Retreat">
+            <input type="text" id="formName" class="neu-raised" required minlength="3" maxlength="100" placeholder="e.g. Green Valley Retreat">
           </div>
 
           <div class="form-row">
@@ -113,7 +113,7 @@
             </div>
             <div class="form-group">
               <label for="formCapacity">Guest Capacity *</label>
-              <input type="text" id="formCapacity" class="neu-raised" required placeholder="e.g. 50">
+              <input type="number" id="formCapacity" class="neu-raised" required min="1" max="10000" placeholder="e.g. 50">
             </div>
           </div>
 
@@ -150,19 +150,19 @@
 
           <div class="form-group">
             <label for="formSubmitterPhone">Your Phone Number (Confidential Verification) *</label>
-            <input type="tel" id="formSubmitterPhone" class="neu-raised" required placeholder="10-digit mobile number" maxlength="10">
+            <input type="tel" id="formSubmitterPhone" class="neu-raised" required placeholder="10-digit mobile number" pattern="[0-9]{10}" minlength="10" maxlength="10">
             <small>Used only for verification call. Never shown publicly.</small>
           </div>
 
           <div class="form-row">
             <div class="form-group">
               <label for="formPhone">Phone Number for Inquiries *</label>
-              <input type="tel" id="formPhone" class="neu-raised" required placeholder="10-digit mobile" maxlength="10">
+              <input type="tel" id="formPhone" class="neu-raised" required placeholder="10-digit mobile" pattern="[0-9]{10}" minlength="10" maxlength="10">
               <small>Displayed directly on your listing.</small>
             </div>
             <div class="form-group">
               <label for="formWhatsapp">WhatsApp Number *</label>
-              <input type="tel" id="formWhatsapp" class="neu-raised" required placeholder="10-digit mobile" maxlength="10">
+              <input type="tel" id="formWhatsapp" class="neu-raised" required placeholder="10-digit mobile" pattern="[0-9]{10}" minlength="10" maxlength="10">
               <div style="margin-top: 8px; display: flex; align-items: center; gap: 8px;">
                 <input type="checkbox" id="sameAsPhone" style="width: 16px; height: 16px; margin: 0; accent-color: var(--accent);">
                 <label for="sameAsPhone" style="display: inline; font-family: var(--font-mono); font-size: 0.75rem; color: var(--ink-muted); margin: 0; text-transform: none; letter-spacing: 0;">Same as Phone</label>
@@ -238,7 +238,7 @@
             <span class="section-eyebrow">05 — PHOTOS &amp; VIDEO</span>
             <h3>Photos &amp; Video</h3>
           </div>
-          <p class="body-copy" style="color: var(--ink-muted); font-size: 0.85rem; margin-bottom: var(--space-4);">Upload up to 5 clear photos. Maximum 5MB each.</p>
+          <p class="body-copy" style="color: var(--ink-muted); font-size: 0.85rem; margin-bottom: var(--space-4);">Upload at least 1 clear photo (up to 5). Maximum 5MB each. *</p>
 
           <div class="upload-area neu-raised" id="uploadArea">
             <div class="upload-icon">📷</div>
@@ -324,6 +324,6 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js" defer></script>
   <script src="js/data.js?v=20260915_netlify" defer></script>
-  <script src="js/main.js?v=20260915_wa" defer></script>
+  <script src="js/main.js?v=20260917_submitfix" defer></script>
 </body>
 </html>
