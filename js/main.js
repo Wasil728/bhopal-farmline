@@ -375,13 +375,14 @@ async function fetchListings() {
   if (supabaseClient) {
     try {
       // Try ordering by submitted_at first, then fallback to default select
+      const PUBLIC_COLS = 'id, name, area, address, capacity, price_range, pricing_slots, amenities, best_for, description, phone, whatsapp, image_urls, video_url, reviews, faqs, enquiry_count, status, submitted_at, verified_at';
       let res = await supabaseClient
         .from('farmhouses')
-        .select('*')
+        .select(PUBLIC_COLS)
         .order('submitted_at', { ascending: false });
         
       if (res.error) {
-        res = await supabaseClient.from('farmhouses').select('*');
+        res = await supabaseClient.from('farmhouses').select(PUBLIC_COLS);
       }
       
       const { data, error } = res;
@@ -696,12 +697,6 @@ window.trackContactClick = function(farmhouseId, farmhouseName, contactMethod) {
     });
   }
 
-  // Increment Supabase enquiry counter if connected
-  if (supabaseClient && farmhouseId) {
-    try {
-      supabaseClient.rpc('increment_enquiry', { farmhouse_id: farmhouseId }).catch(() => {});
-    } catch(e) {}
-  }
 };
 
 // Create Card HTML — Clean Separated Structured Layout
@@ -729,8 +724,10 @@ function createCardHTML(f, isNew = false) {
     let minVal = Infinity;
     let minPriceStr = '';
     slots.forEach(slot => {
-      // Strip non-numeric characters (₹ commas spaces) and try to parse
-      const num = parseFloat(String(slot.price || '').replace(/[^\d.]/g, ''));
+      // Extract the first numeric value from the string (handling ranges correctly)
+      const rawPrice = String(slot.price || '').replace(/,/g, '');
+      const match = rawPrice.match(/\d+(\.\d+)?/);
+      const num = match ? parseFloat(match[0]) : NaN;
       if (!isNaN(num) && num < minVal) {
         minVal = num;
         minPriceStr = slot.price;
@@ -839,7 +836,8 @@ async function initDetailPage() {
   let farm = null;
   if (supabaseClient) {
     try {
-      const { data } = await supabaseClient.from('farmhouses').select('*').eq('id', id).single();
+      const PUBLIC_COLS = 'id, name, area, address, capacity, price_range, pricing_slots, amenities, best_for, description, phone, whatsapp, image_urls, video_url, reviews, faqs, enquiry_count, status, submitted_at, verified_at';
+      const { data } = await supabaseClient.from('farmhouses').select(PUBLIC_COLS).eq('id', id).single();
       if (data) {
         farm = {
           id: data.id,
@@ -1725,6 +1723,7 @@ function initFormPage() {
           faqs: faqs,
           image_urls: imageUrls,
           video_url: videoUrl,
+          verification_phone: submitterPhoneVal,
           owner_confirmed: true,
           status: 'pending'
         };
