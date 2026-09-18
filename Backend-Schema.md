@@ -24,6 +24,7 @@ All property listings, administrative moderation statuses, media paths, and stru
 | **`price_range`** | `TEXT` | `None` | `NO` | Indicative 24-hour tariff string (e.g. *"₹12,000 – ₹18,000"* or *"4000-5000"*). |
 | **`phone`** | `VARCHAR(15)` | `None` | `NO` | Public customer inquiry telephone line displayed on listing cards and detail page. |
 | **`whatsapp`** | `VARCHAR(15)` | `None` | `NO` | Direct 10-digit mobile number for WhatsApp inquiry message redirection. |
+| **`verification_phone`** | `VARCHAR(15)` | `NULL` | `YES` | Private number submitted by owner for admin verification. Not exposed to public via RLS. |
 | **`description`** | `TEXT` | `''` | `YES` | Long-form editorial narrative covering lawn area, rules, and property vibe. |
 | **`image_urls`** | `TEXT[]` | `ARRAY[]::TEXT[]` | `NO` | Array of public Supabase CDN URLs pointing to compressed property photographs. |
 | **`video_url`** | `TEXT` | `NULL` | `YES` | Public URL pointing to optional 10–20 second property walkthrough/drone video reel. |
@@ -45,9 +46,11 @@ The frontend interfaces with the database through the `@supabase/supabase-js` cl
 
 ### 1. Fetch Approved Listings (Home Page & Directory)
 ```javascript
+const PUBLIC_COLS = 'id, name, area, address, capacity, price_range, pricing_slots, amenities, best_for, description, phone, whatsapp, image_urls, video_url, reviews, faqs, enquiry_count, status, submitted_at, verified_at';
+
 const { data, error } = await supabaseClient
   .from('farmhouses')
-  .select('*')
+  .select(PUBLIC_COLS)
   .order('submitted_at', { ascending: false });
 
 // Filter approved rows in runtime
@@ -56,9 +59,11 @@ const approved = data.filter(item => !item.status || item.status.toLowerCase() =
 
 ### 2. Fetch Single Farmhouse by ID (Detail Page)
 ```javascript
+const PUBLIC_COLS = 'id, name, area, address, capacity, price_range, pricing_slots, amenities, best_for, description, phone, whatsapp, image_urls, video_url, reviews, faqs, enquiry_count, status, submitted_at, verified_at';
+
 const { data, error } = await supabaseClient
   .from('farmhouses')
-  .select('*')
+  .select(PUBLIC_COLS)
   .eq('id', id)
   .single();
 ```
@@ -80,26 +85,13 @@ const { error } = await supabaseClient
     best_for: ["Wedding", "Birthday"],
     image_urls: ["https://.../farm_1.jpg", "https://.../farm_2.jpg"],
     video_url: "https://.../video_1.mp4",
+    verification_phone: "9826000001",
     owner_confirmed: true,
     status: "pending"
   }]);
 ```
 
-### 4. Increment Farmhouse Enquiry Counter (Stored Procedure / RPC)
-```sql
-CREATE OR REPLACE FUNCTION increment_enquiry(farmhouse_id UUID)
-RETURNS void AS $$
-BEGIN
-  UPDATE farmhouses
-  SET enquiry_count = enquiry_count + 1
-  WHERE id = farmhouse_id;
-END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
-```
-*Frontend execution:*
-```javascript
-await supabaseClient.rpc('increment_enquiry', { farmhouse_id: farmId });
-```
+*(Note: The `increment_enquiry` RPC was removed for security reasons; enquiries are now tracked purely via Google Analytics events).*
 
 ---
 
@@ -161,16 +153,16 @@ The platform provisions two dedicated Supabase Storage Buckets backed by Amazon 
 
 ### 1. `farmhouse-photos` Bucket
 - **Public Visibility**: Enabled (Public Read).
-- **MIME Types**: `image/jpeg`, `image/png`, `image/webp`.
+- **MIME Types**: `image/jpeg`, `image/png`.
+- **Upload Restrictions (RLS)**: Enforced via `INSERT` policy. Anonymous uploads are hard-limited to 5 MB per file and must have `.jpg`/`.jpeg`/`.png` extensions.
 - **Target Size**: ~200 KB per photograph (pre-compressed client-side).
 - **Public URL Format**:
   `https://jgardnqycrpvgkhwzdkw.supabase.co/storage/v1/object/public/farmhouse-photos/[filename].jpg`
 
 ### 2. `farmhouse-videos` Bucket
 - **Public Visibility**: Enabled (Public Read).
-- **MIME Types**: `video/mp4`, `video/webm`, `video/quicktime`.
-- **Size Limit**: 20 MB hard ceiling enforced client-side prior to transfer.
-- **Resilience Fallback**: If the dedicated `farmhouse-videos` bucket is omitted, the frontend automatically routes video uploads into `farmhouse-photos` transparently.
+- **MIME Types**: `video/mp4`.
+- **Upload Restrictions (RLS)**: Enforced via `INSERT` policy. Anonymous uploads are hard-limited to 20 MB per file and must have an `.mp4` extension.
 
 ---
 
