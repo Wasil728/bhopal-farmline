@@ -599,17 +599,24 @@ function updateStats() {
 }
 
 // Render Recently Added Row
-// Issue 5 fix: only show this section when there are enough listings that
-// the "Recently Added" slice (first 4) is genuinely distinct from the full
-// directory. With ≤4 listings it would duplicate the All Farmhouses view.
+// Only shows farmhouses approved within the last 7 days.
+// After 7 days, a listing automatically disappears from this section.
 function renderNewListings() {
   const section = document.getElementById('newListingsSection');
   const grid = document.getElementById('newListingsGrid');
   if (!section || !grid) return;
-  
-  if (allFarmhouses.length > 4) {
+
+  const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+  const now = Date.now();
+
+  const recentListings = allFarmhouses.filter(f => {
+    const submitted = f.submitted_at ? new Date(f.submitted_at).getTime() : 0;
+    return submitted > 0 && (now - submitted) <= SEVEN_DAYS_MS;
+  });
+
+  if (recentListings.length > 0) {
     section.style.display = 'block';
-    grid.innerHTML = allFarmhouses.slice(0, 4).map(f => createCardHTML(f, true)).join('');
+    grid.innerHTML = recentListings.map(f => createCardHTML(f, true)).join('');
     initCardAnimations();
   } else {
     section.style.display = 'none';
