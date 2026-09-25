@@ -405,7 +405,8 @@ async function fetchListings() {
           video_url: item.video_url || item.videoUrl || null,
           reviews: item.reviews || [],
           faqs: item.faqs || [],
-          enquiryCount: item.enquiry_count || 0
+          enquiryCount: item.enquiry_count || 0,
+          submitted_at: item.submitted_at || null
         }));
         
         if (formatted.length > 0) {
