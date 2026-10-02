@@ -2663,3 +2663,125 @@ p, .body-copy {
     grid-column: auto;
   }
 }
+
+/* ============================================================
+   ABOUT PAGE — MOBILE OPTIMISATION
+   Full fix for about.html on phones (360px–768px)
+   ============================================================ */
+@media (max-width: 768px) {
+
+  /* 1. Hero section — reduce massive vertical padding */
+  .about-hero {
+    padding: var(--space-6) 0 var(--space-5);
+  }
+  .about-hero h1 {
+    font-size: clamp(2rem, 8vw, 3rem);
+    line-height: 1.1;
+    margin-bottom: var(--space-3);
+  }
+  .about-hero p {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    max-width: 100%;
+  }
+
+  /* 2. Content section — tighten side padding and vertical spacing */
+  .content-section {
+    padding: var(--space-5) var(--space-4) var(--space-8);
+  }
+
+  /* 3. Old Way vs Farmline Way — stack columns */
+  .about-2col {
+    grid-template-columns: 1fr;
+    border: 1px solid var(--rule-light);
+  }
+  .about-2col .content-card {
+    padding: var(--space-5);
+    border-right: none;
+    border-bottom: 1px solid var(--rule-light);
+  }
+  .about-2col .content-card:last-child {
+    border-bottom: none;
+  }
+  /* List items inside the comparison — smaller text, proper wrap */
+  .about-2col li {
+    font-size: 0.88rem !important;
+    line-height: 1.6;
+  }
+
+  /* 4. How It Works — 3-column grid collapses to 1 column */
+  .value-grid {
+    grid-template-columns: 1fr;
+    border: 1px solid var(--rule-light);
+  }
+  .value-card {
+    border-right: none;
+    border-bottom: 1px solid var(--rule-light);
+    padding: var(--space-5);
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-4);
+  }
+  .value-card:last-child {
+    border-bottom: none;
+  }
+  .value-card .icon {
+    font-size: 1.8rem;
+    margin-bottom: 0;
+    flex-shrink: 0;
+  }
+  .value-card h3 {
+    font-size: 1rem;
+    margin-bottom: var(--space-1);
+  }
+  .value-card p {
+    font-size: 0.88rem;
+    max-width: 100%;
+    margin: 0;
+  }
+
+  /* 5. Pull-quote — reduce font size and left padding */
+  .pull-quote,
+  blockquote.hero-pull-quote {
+    font-size: clamp(1rem, 4vw, 1.2rem);
+    padding-left: var(--space-4);
+    margin: var(--space-5) 0;
+  }
+
+  /* 6. CTA button — full width on mobile */
+  .content-section .btn-primary,
+  .content-section .btn-large,
+  .content-section a.btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    box-sizing: border-box;
+  }
+
+  /* 7. Coverage area paragraph — full width */
+  .body-copy {
+    max-width: 100%;
+  }
+
+  /* 8. Section headings — scale down */
+  .content-card h2 {
+    font-size: clamp(1.4rem, 5vw, 1.8rem);
+  }
+}
+
+@media (max-width: 400px) {
+  .about-hero {
+    padding: var(--space-5) 0 var(--space-4);
+  }
+  .about-hero h1 {
+    font-size: clamp(1.7rem, 8vw, 2.2rem);
+  }
+  .content-section {
+    padding: var(--space-4) var(--space-3) var(--space-7);
+  }
+  .value-card,
+  .about-2col .content-card {
+    padding: var(--space-4);
+  }
+}
