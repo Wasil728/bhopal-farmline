@@ -2506,3 +2506,160 @@ p, .body-copy {
   body { font-size: 14px; }
   p, .body-copy { font-size: 0.95rem; }
 }
+
+/* ============================================================
+   DETAIL PAGE — MOBILE OPTIMISATION
+   Full fix for farmhouse.html on phones (360px–768px)
+   ============================================================ */
+@media (max-width: 768px) {
+
+  /* 1. Stack the two-column layout vertically */
+  .detail-layout {
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    padding: var(--space-4) 0 var(--space-6);
+  }
+
+  /* 2. Kill sticky on mobile — it breaks scroll */
+  .detail-right {
+    position: static;
+    top: auto;
+  }
+
+  /* 3. Gallery — shorter aspect ratio so it doesn't dominate the screen */
+  .gallery-main-container {
+    aspect-ratio: 16/9;
+    border-radius: var(--radius-sm);
+  }
+
+  /* 4. Reduce padding inside the info card so content isn't cut off */
+  .detail-info {
+    padding: var(--space-4);
+    border-radius: var(--radius-sm);
+  }
+
+  /* 5. Farmhouse name — prevent huge text from overflowing */
+  .detail-name {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
+    word-break: break-word;
+    hyphens: auto;
+  }
+
+  /* 6. Action buttons — stack into 2 columns then full width for share */
+  .detail-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-2);
+  }
+  .detail-actions .btn {
+    flex: unset;
+    min-width: unset;
+    width: 100%;
+    padding: 12px 8px;
+    font-size: 0.78rem;
+    text-align: center;
+  }
+  /* Share button always takes full row */
+  #shareBtn {
+    grid-column: 1 / -1;
+  }
+
+  /* 7. Pricing slots — single column on mobile, label wraps */
+  .pricing-slots-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  .pricing-slot-card {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    padding: var(--space-3) var(--space-4);
+    gap: var(--space-3);
+  }
+  .pricing-slot-label {
+    flex: 1;
+    white-space: normal;
+    font-size: 0.8rem;
+    line-height: 1.4;
+  }
+  .pricing-slot-price {
+    font-size: 1.1rem;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  /* 8. Amenities — single column on very small screens */
+  .amenities-grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+
+  /* 9. Badges and best-for tags — wrap cleanly */
+  .detail-badges,
+  #bestForTags {
+    gap: var(--space-1);
+  }
+  .stamp-badge,
+  .best-for-tag {
+    font-size: 0.72rem;
+    padding: 4px 9px;
+    word-break: break-word;
+  }
+
+  /* 10. Thumbnail strip — taller touch targets */
+  .gallery-thumb {
+    width: 64px;
+    height: 50px;
+    flex-shrink: 0;
+  }
+
+  /* 11. Section heading sizes — keep them readable not oversized */
+  .detail-section-block h3 {
+    font-size: clamp(1.2rem, 5vw, 1.6rem);
+  }
+
+  /* 12. Back link — bigger touch target */
+  .back-link {
+    font-size: 0.85rem;
+    padding: var(--space-2) 0;
+    display: inline-flex;
+    min-height: 44px;
+    align-items: center;
+  }
+
+  /* 13. About / description text — full width, proper line length */
+  #detailDescription {
+    max-width: 100%;
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+
+  /* 14. Review cards — readable on small screens */
+  .review-text {
+    font-size: 1rem;
+    padding-left: var(--space-3);
+  }
+
+  /* 15. FAQ accordion — full width, bigger tap area */
+  .faq-item summary {
+    padding: var(--space-4) 0;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 400px) {
+  /* Extra small phones (360px) — tighten container padding */
+  .container {
+    padding: 0 var(--space-3);
+  }
+  .detail-info {
+    padding: var(--space-3);
+  }
+  .detail-actions {
+    grid-template-columns: 1fr;
+  }
+  #shareBtn {
+    grid-column: auto;
+  }
+}
