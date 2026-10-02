@@ -3,29 +3,19 @@
  * Handles site navigation, live filtering, detail template, and farmhouse submission.
  */
 
-// Global Error Boundary for Diagnostics
+// ── GLOBAL ERROR BOUNDARY ──────────────────────────────────────────────────
+// Catches any uncaught JS crash silently — logs to console for debugging.
+// Does NOT show a red box to real visitors.
 window.onerror = function(message, source, lineno, colno, error) {
-  console.error("Diagnostic error caught:", message, source, lineno, colno, error);
-  var errorDiv = document.getElementById('jsDiagnosticError');
-  if (!errorDiv) {
-    errorDiv = document.createElement('div');
-    errorDiv.id = 'jsDiagnosticError';
-    errorDiv.style.position = 'fixed';
-    errorDiv.style.bottom = '10px';
-    errorDiv.style.right = '10px';
-    errorDiv.style.backgroundColor = '#991B1B';
-    errorDiv.style.color = '#FFF';
-    errorDiv.style.padding = '12px 18px';
-    errorDiv.style.borderRadius = '8px';
-    errorDiv.style.zIndex = '99999';
-    errorDiv.style.fontFamily = 'monospace';
-    errorDiv.style.fontSize = '12px';
-    errorDiv.style.boxShadow = '0 10px 25px rgba(0,0,0,0.5)';
-    errorDiv.innerHTML = '<strong>⚠️ Error:</strong> ' + message;
-    document.body.appendChild(errorDiv);
-  }
-  return false;
+  console.error('[Farmline Error]', message, '| Source:', source, 'L' + lineno);
+  return true; // prevents default browser error display
 };
+window.addEventListener('unhandledrejection', function(event) {
+  console.error('[Farmline Unhandled Promise]', event.reason);
+  event.preventDefault();
+});
+// ──────────────────────────────────────────────────────────────────────────
+
 
 // Supabase Configuration
 const SUPABASE_URL = 'https://jgardnqycrpvgkhwzdkw.supabase.co';
@@ -282,16 +272,24 @@ function initBackToTop() {
 async function initHomePage() {
   renderFilterButtons();
   setupSearchAndControls();
-  
-  allFarmhouses = await fetchListings();
-  updateStats();
-  renderNewListings();
-  renderFilterButtons();
-  applyFilters();
 
-  // Rotating hero video showcase for approved listings with video_url
-  const withVideo = allFarmhouses.filter(f => Boolean(f.video_url));
-  initHeroVideoShowcase(withVideo);
+  // Show skeleton loaders immediately so users know data is loading
+  showSkeletonCards();
+
+  try {
+    allFarmhouses = await fetchListings();
+    updateStats();
+    renderNewListings();
+    renderFilterButtons();
+    applyFilters();
+
+    // Rotating hero video showcase for approved listings with video_url
+    const withVideo = allFarmhouses.filter(f => Boolean(f.video_url));
+    initHeroVideoShowcase(withVideo);
+  } catch (err) {
+    console.error('[Farmline] Failed to load listings:', err);
+    showListingsError();
+  }
 }
 
 // Rotating hero video showcase
@@ -671,6 +669,39 @@ function applyFilters() {
   }
   
   renderCardGrid();
+}
+
+// Show animated skeleton cards while listings load
+function showSkeletonCards() {
+  const grid = document.getElementById('cardGrid');
+  if (!grid) return;
+  const skeletonCard = `
+    <div class="farm-card" style="pointer-events:none;" aria-hidden="true">
+      <div style="height:220px;background:linear-gradient(90deg,var(--bg-paper-offset) 25%,var(--bg-paper) 50%,var(--bg-paper-offset) 75%);background-size:200% 100%;animation:skeleton-shimmer 1.5s infinite;"></div>
+      <div style="padding:1.25rem;">
+        <div style="height:12px;width:40%;border-radius:4px;margin-bottom:12px;background:linear-gradient(90deg,var(--bg-paper-offset) 25%,var(--bg-paper) 50%,var(--bg-paper-offset) 75%);background-size:200% 100%;animation:skeleton-shimmer 1.5s infinite;"></div>
+        <div style="height:20px;width:75%;border-radius:4px;margin-bottom:10px;background:linear-gradient(90deg,var(--bg-paper-offset) 25%,var(--bg-paper) 50%,var(--bg-paper-offset) 75%);background-size:200% 100%;animation:skeleton-shimmer 1.5s infinite;"></div>
+        <div style="height:14px;width:55%;border-radius:4px;margin-bottom:20px;background:linear-gradient(90deg,var(--bg-paper-offset) 25%,var(--bg-paper) 50%,var(--bg-paper-offset) 75%);background-size:200% 100%;animation:skeleton-shimmer 1.5s infinite;"></div>
+        <div style="display:flex;gap:8px;">
+          <div style="flex:1;height:40px;border-radius:6px;background:linear-gradient(90deg,var(--bg-paper-offset) 25%,var(--bg-paper) 50%,var(--bg-paper-offset) 75%);background-size:200% 100%;animation:skeleton-shimmer 1.5s infinite;"></div>
+          <div style="flex:1;height:40px;border-radius:6px;background:linear-gradient(90deg,var(--bg-paper-offset) 25%,var(--bg-paper) 50%,var(--bg-paper-offset) 75%);background-size:200% 100%;animation:skeleton-shimmer 1.5s infinite;"></div>
+        </div>
+      </div>
+    </div>`;
+  grid.innerHTML = skeletonCard.repeat(6);
+}
+
+// Show a friendly error state in the card grid if Supabase completely fails
+function showListingsError() {
+  const grid = document.getElementById('cardGrid');
+  if (!grid) return;
+  grid.innerHTML = `
+    <div style="grid-column:1/-1;padding:var(--space-8) var(--space-4);text-align:center;">
+      <div style="font-size:3rem;margin-bottom:var(--space-3);">😕</div>
+      <h3 style="font-family:var(--font-display);font-size:1.4rem;color:var(--ink-primary);margin-bottom:var(--space-2);">Could not load listings</h3>
+      <p style="color:var(--ink-muted);font-size:0.95rem;max-width:400px;margin:0 auto var(--space-5);">There was a problem connecting to the server. Please check your internet connection and try again.</p>
+      <button onclick="window.location.reload()" class="btn btn-primary" style="display:inline-flex;width:auto;">🔄 Retry</button>
+    </div>`;
 }
 
 // Render Card Grid
