@@ -168,6 +168,7 @@ function initializeApp() {
   initBackToTop();
   initPageTransitions();
   initScrollDrawDividers();
+  initHeroParallax();
   
   const page = detectCurrentPage();
   if (page === 'home') {
@@ -178,6 +179,34 @@ function initializeApp() {
     initFormPage();
   }
 }
+
+// --- SUBTLE HERO PARALLAX ---
+function initHeroParallax() {
+  const heroOverlay = document.querySelector('.hero-overlay');
+  const heroVideo = document.querySelector('.hero-video-container'); // also target video if active
+  
+  if (!heroOverlay && !heroVideo) return;
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+  let ticking = false;
+
+  window.addEventListener('scroll', () => {
+    if (!ticking) {
+      window.requestAnimationFrame(() => {
+        const scrolled = window.scrollY;
+        // Only run parallax if we are somewhat near the top
+        if (scrolled < window.innerHeight) {
+          const yPos = scrolled * 0.35; // Move up at 35% speed of scroll
+          if (heroOverlay) heroOverlay.style.transform = `translateY(${yPos}px)`;
+          if (heroVideo) heroVideo.style.transform = `translateY(${yPos}px)`;
+        }
+        ticking = false;
+      });
+      ticking = true;
+    }
+  }, { passive: true });
+}
+
 
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', initializeApp);

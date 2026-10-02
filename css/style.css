@@ -171,20 +171,31 @@ a { color: inherit; text-decoration: none; }
   .draw-line {
     transform: scaleX(0);
     transform-origin: left;
-    transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+    transition: transform 0.85s cubic-bezier(0.175, 0.885, 0.32, 1.15); /* Premium spring easing */
   }
   .draw-line.is-drawn {
     transform: scaleX(1);
   }
   .section-eyebrow {
-    opacity: 0.65;
-    transform: translateY(2px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    opacity: 0;
+    transform: translateY(12px);
+    transition: opacity 0.6s cubic-bezier(0.25, 1, 0.5, 1), transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.1);
   }
   .section-eyebrow.eyebrow-revealed {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+/* ============================================================
+   TEXT SHIFT (HOVER INTERACTION)
+   ============================================================ */
+.btn-shift-icon {
+  display: inline-block;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.btn:hover .btn-shift-icon {
+  transform: translateX(4px);
 }
 
 /* ============================================================
@@ -823,13 +834,19 @@ p, .body-copy {
   white-space: nowrap;
   box-shadow: 6px 6px 12px var(--neu-shadow-dark),
               -6px -6px 12px var(--neu-shadow-light);
-  transition: box-shadow var(--transition-normal), color var(--transition-fast), font-weight var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast);
+  transition: box-shadow var(--transition-normal), color var(--transition-fast), font-weight var(--transition-fast), background var(--transition-fast), border-color var(--transition-fast), transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .filter-btn:hover {
   box-shadow: 8px 8px 16px var(--neu-shadow-dark),
               -8px -8px 16px var(--neu-shadow-light);
   color: var(--ink-primary);
+}
+
+.filter-btn:active {
+  transform: scale(0.96);
+  box-shadow: inset 3px 3px 6px var(--neu-shadow-dark),
+              inset -3px -3px 6px var(--neu-shadow-light);
 }
 
 .filter-btn.area-active,
@@ -867,7 +884,7 @@ p, .body-copy {
   cursor: pointer;
   box-shadow: 6px 6px 12px var(--neu-shadow-dark),
               -6px -6px 12px var(--neu-shadow-light);
-  transition: box-shadow var(--transition-normal), color var(--transition-fast);
+  transition: box-shadow var(--transition-normal), color var(--transition-fast), transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .btn-clear-amenities:hover {
   box-shadow: 8px 8px 16px var(--neu-shadow-dark),
@@ -875,6 +892,7 @@ p, .body-copy {
   color: var(--error);
 }
 .btn-clear-amenities:active {
+  transform: scale(0.96);
   box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
               inset -4px -4px 8px var(--neu-shadow-light);
   color: var(--error);
@@ -1009,12 +1027,12 @@ p, .body-copy {
   height: 100%;
   object-fit: cover;
   display: block;
-  transition: transform 600ms ease, filter 300ms ease;
+  transition: transform 600ms cubic-bezier(0.25, 1, 0.5, 1), filter 300ms ease;
   filter: saturate(0.92);
 }
 
 .farm-card:hover .card-image {
-  transform: scale(1.04);
+  transform: scale(1.05);
   filter: saturate(1);
 }
 
@@ -1184,7 +1202,7 @@ p, .body-copy {
   color: var(--ink-primary);
   box-shadow: 6px 6px 12px var(--neu-shadow-dark),
               -6px -6px 12px var(--neu-shadow-light);
-  transition: box-shadow var(--transition-normal), color var(--transition-fast), background var(--transition-fast);
+  transition: box-shadow var(--transition-normal), color var(--transition-fast), background var(--transition-fast), transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .btn:hover {
@@ -1193,6 +1211,7 @@ p, .body-copy {
 }
 
 .btn:active {
+  transform: scale(0.96);
   box-shadow: inset 4px 4px 8px var(--neu-shadow-dark),
               inset -4px -4px 8px var(--neu-shadow-light);
 }
