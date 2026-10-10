@@ -14,8 +14,17 @@ window.addEventListener('unhandledrejection', function(event) {
   console.error('[Farmline Unhandled Promise]', event.reason);
   event.preventDefault();
 });
+// ── CLOUDFLARE TURNSTILE GLOBAL CALLBACKS ─────────────────────────────────
+window._turnstileToken = null;
+window.onTurnstileSuccess = function(token) {
+  window._turnstileToken = token;
+  const msg = document.getElementById('turnstileMsg');
+  if (msg) msg.style.display = 'none';
+};
+window.onTurnstileExpired = function() {
+  window._turnstileToken = null;
+};
 // ──────────────────────────────────────────────────────────────────────────
-
 
 // Supabase Configuration
 const SUPABASE_URL = 'https://jgardnqycrpvgkhwzdkw.supabase.co';
@@ -1319,28 +1328,6 @@ function initFormPage() {
     });
   }
   
-  // Permission Checkbox + Pricing Slots Validation -> Submit Button Enable
-  const permCheck = document.getElementById('formPermission');
-  const submitBtn = document.getElementById('submitBtn');
-
-  // ── CLOUDFLARE TURNSTILE ──────────────────────────────────────────────────
-  // Token is set by the global callbacks below when Turnstile completes/expires.
-  // Submit button stays disabled until: checkbox ✓ AND pricing slot ✓ AND token ✓
-  window._turnstileToken = null;
-
-  window.onTurnstileSuccess = function(token) {
-    window._turnstileToken = token;
-    const msg = document.getElementById('turnstileMsg');
-    if (msg) msg.style.display = 'none';
-    updateSubmitState();
-  };
-
-  window.onTurnstileExpired = function() {
-    window._turnstileToken = null;
-    updateSubmitState();
-  };
-  // ─────────────────────────────────────────────────────────────────────────
-
   // Helper: check if at least 1 complete pricing slot exists (both label and price filled)
   function hasValidPricingSlot() {
     const rows = document.querySelectorAll('#pricingSlotsList .pricing-slot-row');
@@ -1350,18 +1337,6 @@ function initFormPage() {
       if (label && price) return true;
     }
     return false;
-  }
-
-  function updateSubmitState() {
-    if (!submitBtn || !permCheck) return;
-    // Require: checkbox checked + valid pricing slot + Turnstile token present
-    const turnstileReady = Boolean(window._turnstileToken);
-    submitBtn.disabled = !(permCheck.checked && hasValidPricingSlot() && turnstileReady);
-  }
-
-  if (permCheck && submitBtn) {
-    updateSubmitState();
-    permCheck.addEventListener('change', updateSubmitState);
   }
 
   // ── PRICING SLOT BUILDER ──────────────────────────────────────────────────
@@ -1386,10 +1361,6 @@ function initFormPage() {
       if (allRows.length <= 1) return; // Always keep at least 1 row
       row.remove();
       updateSlotBuilderState();
-      updateSubmitState();
-    });
-    row.querySelectorAll('input').forEach(inp => {
-      inp.addEventListener('input', () => updateSubmitState());
     });
     return row;
   }
@@ -1671,14 +1642,7 @@ function initFormPage() {
       }
       
       const submitBtn = document.getElementById('submitBtn');
-
-      // ── TURNSTILE GUARD — hard block if token missing ─────────────────────
-      if (!window._turnstileToken) {
-        const msg = document.getElementById('turnstileMsg');
-        if (msg) msg.style.display = 'block';
-        return;
-      }
-      // ──────────────────────────────────────────────────────────────────────
+      const permCheck = document.getElementById('formPermission');
 
       // Client-side validations before beginning file uploads
       const nameVal = (document.getElementById('formName')?.value || '').trim();
@@ -1709,11 +1673,37 @@ function initFormPage() {
         return;
       }
 
+      // Check pricing slots
+      if (!hasValidPricingSlot()) {
+        alert('Please add at least one complete rate option with both timing and price in Section 03 (e.g. 12 Hours, ₹8,000).');
+        document.getElementById('pricingSlotsList')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
       if (selectedFiles.length === 0) {
         alert('Please select at least 1 photo of your farmhouse (up to 5 photos). Photos are required to publish your listing.');
         document.getElementById('uploadArea')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
+
+      // Check confirmation checkbox
+      if (permCheck && !permCheck.checked) {
+        alert('Please check the confirmation box in Section 06 agreeing that you are the owner or authorized manager of this property.');
+        permCheck.focus();
+        permCheck.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+
+      // ── TURNSTILE GUARD ───────────────────────────────────────────────────
+      const turnstileToken = window._turnstileToken || document.querySelector('[name="cf-turnstile-response"]')?.value;
+      if (!turnstileToken) {
+        const msg = document.getElementById('turnstileMsg');
+        if (msg) msg.style.display = 'block';
+        alert('Please complete the security check (Cloudflare Turnstile) above before submitting.');
+        document.querySelector('.cf-turnstile')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        return;
+      }
+      // ──────────────────────────────────────────────────────────────────────
 
       if (submitBtn) {
         submitBtn.disabled = true;
@@ -1860,7 +1850,6 @@ function initFormPage() {
         if (submitBtn) {
           submitBtn.disabled = false;
           submitBtn.textContent = 'Submit Farmhouse Listing →';
-          updateSubmitState();
         }
       }
     });
