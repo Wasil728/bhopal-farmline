@@ -1323,6 +1323,24 @@ function initFormPage() {
   const permCheck = document.getElementById('formPermission');
   const submitBtn = document.getElementById('submitBtn');
 
+  // ── CLOUDFLARE TURNSTILE ──────────────────────────────────────────────────
+  // Token is set by the global callbacks below when Turnstile completes/expires.
+  // Submit button stays disabled until: checkbox ✓ AND pricing slot ✓ AND token ✓
+  window._turnstileToken = null;
+
+  window.onTurnstileSuccess = function(token) {
+    window._turnstileToken = token;
+    const msg = document.getElementById('turnstileMsg');
+    if (msg) msg.style.display = 'none';
+    updateSubmitState();
+  };
+
+  window.onTurnstileExpired = function() {
+    window._turnstileToken = null;
+    updateSubmitState();
+  };
+  // ─────────────────────────────────────────────────────────────────────────
+
   // Helper: check if at least 1 complete pricing slot exists (both label and price filled)
   function hasValidPricingSlot() {
     const rows = document.querySelectorAll('#pricingSlotsList .pricing-slot-row');
@@ -1336,7 +1354,9 @@ function initFormPage() {
 
   function updateSubmitState() {
     if (!submitBtn || !permCheck) return;
-    submitBtn.disabled = !(permCheck.checked && hasValidPricingSlot());
+    // Require: checkbox checked + valid pricing slot + Turnstile token present
+    const turnstileReady = Boolean(window._turnstileToken);
+    submitBtn.disabled = !(permCheck.checked && hasValidPricingSlot() && turnstileReady);
   }
 
   if (permCheck && submitBtn) {
@@ -1651,7 +1671,15 @@ function initFormPage() {
       }
       
       const submitBtn = document.getElementById('submitBtn');
-      
+
+      // ── TURNSTILE GUARD — hard block if token missing ─────────────────────
+      if (!window._turnstileToken) {
+        const msg = document.getElementById('turnstileMsg');
+        if (msg) msg.style.display = 'block';
+        return;
+      }
+      // ──────────────────────────────────────────────────────────────────────
+
       // Client-side validations before beginning file uploads
       const nameVal = (document.getElementById('formName')?.value || '').trim();
       if (nameVal.length < 3) {

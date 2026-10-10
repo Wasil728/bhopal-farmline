@@ -279,6 +279,20 @@
                 I confirm that I am the owner or authorized manager of this property. All details provided are genuine, and I agree to a quick phone call to verify this listing before it goes live.
               </label>
             </div>
+
+            <!-- Cloudflare Turnstile — proves the submitter is human -->
+            <!-- IMPORTANT: Replace YOUR_SITE_KEY_HERE with your key from dash.cloudflare.com → Turnstile -->
+            <div class="cf-turnstile"
+                 data-sitekey="YOUR_SITE_KEY_HERE"
+                 data-theme="light"
+                 data-callback="onTurnstileSuccess"
+                 data-expired-callback="onTurnstileExpired"
+                 style="margin: 4px 0;">
+            </div>
+            <p id="turnstileMsg" style="display:none; font-family:var(--font-mono); font-size:0.72rem; color:var(--error); margin-top:4px;">
+              Please complete the verification above before submitting.
+            </p>
+
             <button type="submit" class="btn btn-primary btn-large" id="submitBtn" disabled>Submit Farmhouse Listing →</button>
           </div>
         </div>
@@ -321,10 +335,12 @@
 
   <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
+  <!-- Cloudflare Turnstile — anti-spam for listing submission -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async defer></script>
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1/dist/umd/supabase.min.js" integrity="sha384-q36VSR1ktH2hgqgm+0LDeyqPW8CyZHSxfDSttSPm5ReOJzB+sYThmh7D4fE+jWTs" crossorigin="anonymous" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js" integrity="sha384-v7aXOXbpOITKzb3SW0dgnKc/2x2ywIhkYVl+ZdwxtUQHQZIt3rhKedAAePwgIeab" crossorigin="anonymous" defer></script>
-  <script src="js/data.js?v=20260915_netlify" defer></script>
-  <script src="js/main.js?v=20261002" defer></script>
+  <script src="js/data.js?v=20261002" defer></script>
+  <script src="js/main.js?v=20261010" defer></script>
 </body>
 </html>
 
