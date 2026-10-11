@@ -968,11 +968,14 @@ p, .body-copy {
 }
 
 /* ============================================================
-   FARM CARD — Clean Separated Structured Layout
+   FARM CARD — Compact Responsive Layouts
+   Desktop (>=1025px): 3-column vertical compact card
+   Tablet (601-1024px): 2-column vertical compact card
+   Mobile (<=600px): Horizontal list card (120-140px height)
    ============================================================ */
 .card-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(3, 1fr);
   gap: var(--space-6);
   border: none;
 }
@@ -980,20 +983,20 @@ p, .body-copy {
 .farm-card {
   background: var(--bg-surface);
   border: 1px solid var(--rule-light);
-  border-radius: var(--neu-radius-sm);
+  border-radius: var(--radius-md);
   cursor: pointer;
   overflow: hidden;
-  transition: transform var(--transition-normal), box-shadow var(--transition-normal), background var(--transition-fast);
   position: relative;
   display: flex;
   flex-direction: column;
+  transition: transform var(--transition-normal), box-shadow var(--transition-normal), background var(--transition-fast);
   box-shadow: 6px 6px 14px var(--neu-shadow-dark), -6px -6px 14px var(--neu-shadow-light);
 }
 
 .farm-card:hover {
   background: var(--bg-white);
-  transform: translateY(-3px);
-  box-shadow: 8px 8px 18px var(--neu-shadow-dark), -8px -8px 18px var(--neu-shadow-light);
+  transform: translateY(-4px);
+  box-shadow: 8px 8px 20px var(--neu-shadow-dark), -8px -8px 20px var(--neu-shadow-light);
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -1016,7 +1019,9 @@ p, .body-copy {
 
 .card-image-wrapper {
   position: relative;
-  height: 220px;
+  width: 100%;
+  aspect-ratio: 16/10;
+  max-height: 220px;
   overflow: hidden;
   background: var(--bg-card);
   border-bottom: 1px solid var(--rule-light);
@@ -1040,35 +1045,34 @@ p, .body-copy {
   width: 100%;
   height: 100%;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: 2.8rem;
-  gap: var(--space-2);
+  font-size: 2.6rem;
   background: var(--bg-page);
   color: var(--ink-muted);
 }
 
 .card-badge-new {
   position: absolute;
-  top: var(--space-3);
-  right: var(--space-3);
+  top: var(--space-2);
+  left: var(--space-2);
   background: var(--accent);
-  color: white;
+  color: #ffffff;
   font-family: var(--font-mono);
-  font-size: 0.6rem;
+  font-size: 0.62rem;
   font-weight: 700;
-  letter-spacing: 0.12em;
-  padding: 4px 10px;
+  letter-spacing: 0.08em;
+  padding: 3px 8px;
   border-radius: var(--radius-sm);
   text-transform: uppercase;
-  z-index: 1;
+  z-index: 2;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.2);
 }
 
 .card-area-badge {
   position: absolute;
-  bottom: var(--space-3);
-  left: var(--space-3);
+  bottom: var(--space-2);
+  left: var(--space-2);
   background: rgba(20, 21, 15, 0.78);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
@@ -1076,77 +1080,86 @@ p, .body-copy {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   font-weight: 600;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding: 4px 10px;
+  letter-spacing: 0.06em;
+  padding: 3px 8px;
   border-radius: var(--radius-sm);
   z-index: 1;
 }
 
 .card-body {
-  padding: var(--space-5);
+  padding: var(--space-4);
   display: flex;
   flex-direction: column;
-  gap: var(--space-3);
+  gap: var(--space-2);
   flex: 1;
+  min-width: 0;
 }
 
 .card-name {
   font-family: var(--font-display);
-  font-size: 1.55rem;
+  font-size: 1.3rem;
   font-weight: 700;
   color: var(--ink-primary);
-  letter-spacing: -0.02em;
-  line-height: 1.15;
+  letter-spacing: -0.015em;
+  line-height: 1.2;
   margin: 0;
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* Structured 2-column specs row */
-.card-specs-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: var(--space-3);
-  padding: var(--space-3) var(--space-4);
-  background: var(--bg-page);
-  border-radius: var(--radius-sm);
-  border: 1px solid var(--rule-light);
-  margin: var(--space-1) 0;
-}
-
-.spec-col {
+.card-meta-row {
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.spec-label {
+  align-items: center;
+  gap: 6px;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
+  font-size: 0.76rem;
   color: var(--ink-muted);
-}
-
-.spec-val {
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  font-weight: 600;
-  color: var(--ink-primary);
+  line-height: 1.25;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.spec-price {
-  color: var(--accent);
-  font-weight: 700;
+.card-meta-item {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-meta-dot {
+  color: var(--ink-muted);
+  opacity: 0.6;
 }
 
 .card-amenities-row {
   display: flex;
-  flex-wrap: wrap;
+  align-items: center;
   gap: 6px;
-  margin-bottom: var(--space-2);
+  margin: 2px 0;
+  line-height: 1;
+}
+
+.card-amenity-ico {
+  font-size: 0.92rem;
+  display: inline-flex;
+  align-items: center;
+}
+
+.card-amenity-more {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: var(--ink-muted);
+  background: var(--bg-page);
+  padding: 1px 7px;
+  border-radius: 999px;
+  border: 1px solid var(--rule-light);
+  line-height: 1.2;
+  display: inline-flex;
+  align-items: center;
 }
 
 .card-amenity-pill {
@@ -1155,7 +1168,7 @@ p, .body-copy {
   font-weight: 500;
   color: var(--ink-secondary);
   background: var(--bg-page);
-  padding: 4px 10px;
+  padding: 3px 8px;
   border: 1px solid var(--rule-light);
   border-radius: 999px;
   display: inline-flex;
@@ -1163,19 +1176,287 @@ p, .body-copy {
   gap: 4px;
 }
 
-.card-actions {
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
+.card-footer-row {
+  display: flex;
+  flex-direction: column;
   gap: var(--space-3);
   margin-top: auto;
   padding-top: var(--space-3);
   border-top: 1px solid var(--rule-light);
 }
 
-.card-actions .btn {
-  padding: 10px 14px;
-  font-size: 0.8rem;
+.card-price-wrap {
+  min-width: 0;
+}
+
+.card-price-val {
+  font-family: var(--font-body);
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--accent);
+  letter-spacing: -0.01em;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.card-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--space-2);
   width: 100%;
+  margin: 0;
+  padding: 0;
+  border: none;
+}
+
+.card-action-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 10px 14px;
+  border-radius: var(--neu-radius-sm);
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.card-btn-svg {
+  width: 18px;
+  height: 18px;
+  flex-shrink: 0;
+}
+
+.card-btn-text {
+  display: inline;
+}
+
+/* Tablet (601px - 1024px): 2-column vertical compact card */
+@media (max-width: 1024px) and (min-width: 601px) {
+  .card-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-4);
+  }
+  .card-image-wrapper {
+    aspect-ratio: 4/3;
+    max-height: 200px;
+  }
+  .card-name {
+    font-size: 1.2rem;
+  }
+}
+
+/* Mobile (<=600px): Horizontal list card (120-140px height) */
+@media (max-width: 600px) {
+  .card-grid {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  .farm-card {
+    flex-direction: row;
+    align-items: stretch;
+    height: 130px;
+    min-height: 120px;
+    max-height: 140px;
+    border-radius: var(--radius-md);
+    box-shadow: none;
+    border: 1px solid var(--rule-light);
+    background: var(--bg-surface);
+  }
+
+  .farm-card:hover {
+    transform: none;
+    box-shadow: none;
+  }
+
+  .card-image-wrapper {
+    width: 115px;
+    min-width: 115px;
+    max-width: 115px;
+    height: 100%;
+    max-height: none;
+    aspect-ratio: auto;
+    border-bottom: none;
+    border-right: 1px solid var(--rule-light);
+    flex-shrink: 0;
+  }
+
+  .card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .card-image-placeholder {
+    font-size: 2.2rem;
+  }
+
+  .card-area-badge {
+    display: none;
+  }
+
+  .card-badge-new {
+    top: 4px;
+    left: 4px;
+    font-size: 0.55rem;
+    padding: 2px 5px;
+  }
+
+  .card-body {
+    flex: 1;
+    min-width: 0;
+    padding: 10px 12px;
+    gap: 2px;
+    justify-content: space-between;
+  }
+
+  .card-name {
+    font-size: 1rem;
+    line-height: 1.15;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-meta-row {
+    font-size: 0.76rem;
+    gap: 5px;
+    margin: 0;
+  }
+
+  .card-amenities-row {
+    gap: 5px;
+    margin: 1px 0;
+  }
+
+  .card-amenity-ico {
+    font-size: 0.85rem;
+  }
+
+  .card-amenity-more {
+    font-size: 0.76rem;
+    padding: 0 5px;
+  }
+
+  .card-footer-row {
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .card-price-wrap {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .card-price-val {
+    font-size: 0.85rem;
+    line-height: 1.2;
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .card-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: auto;
+    flex-shrink: 0;
+  }
+
+  .card-action-btn {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+    border-radius: var(--neu-radius-sm);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 44px;
+  }
+
+  .card-btn-text {
+    display: none;
+  }
+
+  .card-btn-svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  /* Skeleton loading on mobile */
+  .farm-card[aria-hidden="true"] {
+    flex-direction: row !important;
+    height: 130px !important;
+  }
+  .farm-card[aria-hidden="true"] > div:first-child {
+    width: 115px !important;
+    height: 100% !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Recently Added section on mobile: Horizontal scroll row */
+  #newListingsGrid {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+    overflow-x: auto !important;
+    scroll-snap-type: x mandatory !important;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    gap: var(--space-3) !important;
+    padding-bottom: var(--space-2);
+    margin-bottom: var(--space-6) !important;
+    padding-left: 2px;
+    padding-right: 2px;
+  }
+  #newListingsGrid::-webkit-scrollbar {
+    display: none;
+  }
+  #newListingsGrid .farm-card {
+    flex: 0 0 78% !important;
+    width: 78% !important;
+    max-width: 320px !important;
+    min-width: 270px !important;
+    scroll-snap-align: start;
+    margin-bottom: 0 !important;
+  }
+
+  /* Scroll reveal transition speed on mobile */
+  .farm-card.card-reveal-init {
+    transition-duration: 0.3s !important;
+  }
+}
+
+/* Touch devices: disable cursor-tilt and image zoom */
+@media (hover: none) {
+  .farm-card {
+    transform: none !important;
+  }
+  .farm-card:hover {
+    transform: none !important;
+    box-shadow: none !important;
+  }
+  .farm-card:hover .card-image {
+    transform: none !important;
+  }
 }
 
 /* ============================================================
@@ -2487,8 +2768,6 @@ p, .body-copy {
     padding-right: var(--space-2);
   }
   .area-filter-row::-webkit-scrollbar { display: none; }
-
-  .card-grid { grid-template-columns: 1fr; }
 
   .form-row { grid-template-columns: 1fr; }
   .upload-previews { grid-template-columns: repeat(2, 1fr); }

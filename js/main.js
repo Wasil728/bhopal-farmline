@@ -781,11 +781,13 @@ function createCardHTML(f, isNew = false) {
   const imgUrl = (f.images && f.images.length > 0) ? f.images[0] : '';
   const amens = f.amenities || [];
   const iconsMap = window.amenityIcons || {};
-  const topAmens = amens.slice(0, 3).map(a => `<span class="card-amenity-pill">${iconsMap[a] || '✨'} ${escapeHTML(a)}</span>`).join('');
+  const topAmens = amens.slice(0, 3).map(a => `<span class="card-amenity-ico" title="${escapeHTML(a)}">${iconsMap[a] || '✨'}</span>`).join('');
+  const extraAmens = amens.length > 3 ? `<span class="card-amenity-more">+${amens.length - 3}</span>` : '';
+  const amensHTML = (topAmens || extraAmens) ? `<div class="card-amenities-row">${topAmens}${extraAmens}</div>` : '';
   
-  const badgeHTML = isNew ? `<div class="card-badge-new">NEW LISTING</div>` : '';
+  const badgeHTML = isNew ? `<div class="card-badge-new">NEW</div>` : '';
   const imgHTML = imgUrl 
-    ? `<img src="${escapeHTML(imgUrl)}" class="card-image" loading="lazy" decoding="async" width="400" height="220" alt="${escapeHTML(f.name)}">`
+    ? `<img src="${escapeHTML(imgUrl)}" class="card-image" loading="lazy" decoding="async" width="120" height="120" alt="${escapeHTML(f.name || 'Farmhouse')}">`
     : `<div class="card-image-placeholder">🏡</div>`;
     
   const message = `Hello apka ${f.name} Bhopal Farmline website pe dekha abhi, available he kya?`;
@@ -794,7 +796,7 @@ function createCardHTML(f, isNew = false) {
   const callLink = `tel:+91${String(f.phone || '').slice(-10)}`;
 
   // Determine price display: prefer pricing_slots starting price, fallback to priceRange
-  let cardPriceDisplay = 'Price on request — call karo';
+  let cardPriceDisplay = 'Call karo for price';
   const slots = parsePricingSlots(f.pricingSlots || f.pricing_slots);
   if (slots.length > 0) {
     // Parse numeric value from each slot's price string and find the minimum
@@ -817,7 +819,8 @@ function createCardHTML(f, isNew = false) {
       cardPriceDisplay = `Starting ${formatPrice(slots[0].price)}`;
     }
   } else if (f.priceRange) {
-    cardPriceDisplay = formatPrice(f.priceRange);
+    const formatted = formatPrice(f.priceRange);
+    cardPriceDisplay = formatted.toLowerCase().includes('starting') ? formatted : `Starting ${formatted}`;
   }
   
   return `
@@ -825,28 +828,35 @@ function createCardHTML(f, isNew = false) {
       <div class="card-image-wrapper">
         ${badgeHTML}
         ${imgHTML}
-        <div class="card-area-badge">📍 ${escapeHTML(f.area)}</div>
+        <div class="card-area-badge">📍 ${escapeHTML(f.area || 'Bhopal')}</div>
       </div>
       
       <div class="card-body">
-        <h3 class="card-name">${escapeHTML(f.name)}</h3>
+        <h3 class="card-name">${escapeHTML(f.name || 'Farmhouse')}</h3>
         
-        <div class="card-specs-row">
-          <div class="spec-col">
-            <span class="spec-label">Capacity</span>
-            <span class="spec-val">👥 Up to ${f.capacity || '50'}</span>
-          </div>
-          <div class="spec-col">
-            <span class="spec-label">Rates</span>
-            <span class="spec-val spec-price">💰 ${escapeHTML(cardPriceDisplay)}</span>
-          </div>
+        <div class="card-meta-row">
+          <span class="card-meta-item">📍 ${escapeHTML(f.area || 'Bhopal')}</span>
+          <span class="card-meta-dot">·</span>
+          <span class="card-meta-item">👥 Up to ${escapeHTML(String(f.capacity || '50'))}</span>
         </div>
 
-        ${topAmens ? `<div class="card-amenities-row">${topAmens}</div>` : ''}
+        ${amensHTML}
 
-        <div class="card-actions">
-          <a href="${waLink}" class="btn btn-whatsapp" target="_blank" rel="noopener" onclick="event.stopPropagation(); trackContactClick('${f.id}', '${escapeHTML(f.name).replace(/'/g, "\\'")}', 'whatsapp');">WhatsApp</a>
-          <a href="${callLink}" class="btn btn-call" onclick="event.stopPropagation(); trackContactClick('${f.id}', '${escapeHTML(f.name).replace(/'/g, "\\'")}', 'call');">Call</a>
+        <div class="card-footer-row">
+          <div class="card-price-wrap">
+            <span class="card-price-val spec-price">${escapeHTML(cardPriceDisplay)}</span>
+          </div>
+
+          <div class="card-actions">
+            <a href="${waLink}" class="btn btn-whatsapp card-action-btn" target="_blank" rel="noopener" aria-label="WhatsApp owner" onclick="event.stopPropagation(); trackContactClick('${f.id}', '${escapeHTML(f.name || '').replace(/'/g, "\\'")}', 'whatsapp');">
+              <svg class="card-btn-svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.816 9.816 0 0 0 12.04 2m.01 1.67c2.2 0 4.26.86 5.82 2.42a8.225 8.225 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.42 0-2.82-.37-4.06-1.07l-.29-.17-3.02.79.81-2.95-.19-.3a8.21 8.21 0 0 1-1.26-4.34c0-4.54 3.7-8.24 8.24-8.24m4.52 11.66c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.01-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.39.11-.51.11-.11.25-.29.37-.43.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44s-.56-1.36-.77-1.86c-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.66.31s-.86.84-.86 2.05c0 1.21.88 2.38 1 2.55.13.17 1.74 2.66 4.21 3.73.59.25 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.1-.23-.17-.48-.29z"/></svg>
+              <span class="card-btn-text">WhatsApp</span>
+            </a>
+            <a href="${callLink}" class="btn btn-call card-action-btn" aria-label="Call owner" onclick="event.stopPropagation(); trackContactClick('${f.id}', '${escapeHTML(f.name || '').replace(/'/g, "\\'")}', 'call');">
+              <svg class="card-btn-svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor" aria-hidden="true"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+              <span class="card-btn-text">Call</span>
+            </a>
+          </div>
         </div>
       </div>
     </article>
