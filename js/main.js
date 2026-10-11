@@ -781,8 +781,8 @@ function createCardHTML(f, isNew = false) {
   const imgUrl = (f.images && f.images.length > 0) ? f.images[0] : '';
   const amens = f.amenities || [];
   const iconsMap = window.amenityIcons || {};
-  const topAmens = amens.slice(0, 3).map(a => `<span class="card-amenity-ico" title="${escapeHTML(a)}">${iconsMap[a] || '✨'}</span>`).join('');
-  const extraAmens = amens.length > 3 ? `<span class="card-amenity-more">+${amens.length - 3}</span>` : '';
+  const topAmens = amens.slice(0, 4).map(a => `<span class="card-amenity-ico" title="${escapeHTML(a)}">${iconsMap[a] || '✨'}</span>`).join('');
+  const extraAmens = amens.length > 4 ? `<span class="card-amenity-more">+${amens.length - 4}</span>` : '';
   const amensHTML = (topAmens || extraAmens) ? `<div class="card-amenities-row">${topAmens}${extraAmens}</div>` : '';
   
   const badgeHTML = isNew ? `<div class="card-badge-new">NEW</div>` : '';
