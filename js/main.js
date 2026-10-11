@@ -796,7 +796,7 @@ function createCardHTML(f, isNew = false) {
   const callLink = `tel:+91${String(f.phone || '').slice(-10)}`;
 
   // Determine price display: prefer pricing_slots starting price, fallback to priceRange
-  let cardPriceDisplay = 'Call karo for price';
+  let rawPriceVal = '';
   const slots = parsePricingSlots(f.pricingSlots || f.pricing_slots);
   if (slots.length > 0) {
     // Parse numeric value from each slot's price string and find the minimum
@@ -813,15 +813,20 @@ function createCardHTML(f, isNew = false) {
       }
     });
     if (minPriceStr) {
-      cardPriceDisplay = `Starting ${formatPrice(minPriceStr)}`;
+      rawPriceVal = formatPrice(minPriceStr);
     } else {
       // All prices are non-numeric — show the first slot price as-is
-      cardPriceDisplay = `Starting ${formatPrice(slots[0].price)}`;
+      rawPriceVal = formatPrice(slots[0].price);
     }
   } else if (f.priceRange) {
     const formatted = formatPrice(f.priceRange);
-    cardPriceDisplay = formatted.toLowerCase().includes('starting') ? formatted : `Starting ${formatted}`;
+    rawPriceVal = formatted.replace(/^starting\s*(from\s*)?/i, '');
   }
+
+  const hasPrice = Boolean(rawPriceVal);
+  const priceHTML = hasPrice
+    ? `<span class="card-price-label">Starting from</span><span class="card-price-value card-price-val spec-price">${escapeHTML(rawPriceVal)}</span>`
+    : `<span class="card-price-value card-price-val spec-price is-no-price">Call karo for price</span>`;
   
   return `
     <article class="farm-card" onclick="if(!event.target.closest('.card-actions')) window.location.href='farmhouse.html?id=${f.id}'">
@@ -836,15 +841,14 @@ function createCardHTML(f, isNew = false) {
         
         <div class="card-meta-row">
           <span class="card-meta-item">📍 ${escapeHTML(f.area || 'Bhopal')}</span>
-          <span class="card-meta-dot">·</span>
           <span class="card-meta-item">👥 Up to ${escapeHTML(String(f.capacity || '50'))}</span>
         </div>
 
         ${amensHTML}
 
         <div class="card-footer-row">
-          <div class="card-price-wrap">
-            <span class="card-price-val spec-price">${escapeHTML(cardPriceDisplay)}</span>
+          <div class="card-price-block card-price-wrap">
+            ${priceHTML}
           </div>
 
           <div class="card-actions">

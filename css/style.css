@@ -1113,9 +1113,8 @@ p, .body-copy {
 
 .card-meta-row {
   display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 4px 10px;
+  flex-direction: column;
+  gap: 2px;
   font-family: var(--font-mono);
   font-size: 0.8rem;
   color: var(--ink-muted);
@@ -1124,12 +1123,12 @@ p, .body-copy {
 }
 
 .card-meta-item {
-  white-space: nowrap;
+  white-space: normal;
+  word-break: break-word;
 }
 
 .card-meta-dot {
-  color: var(--ink-muted);
-  opacity: 0.6;
+  display: none;
 }
 
 .card-amenities-row {
@@ -1185,20 +1184,41 @@ p, .body-copy {
   border-top: 1px solid var(--rule-light);
 }
 
+.card-price-block,
 .card-price-wrap {
-  min-width: 0;
+  flex: 1 1 auto;
+  min-width: max-content;
+  display: flex;
+  flex-direction: column;
 }
 
+.card-price-label {
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+  color: var(--ink-muted);
+  display: block;
+  line-height: 1.2;
+}
+
+.card-price-value,
 .card-price-val {
-  font-family: var(--font-body);
-  font-size: 1rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--accent);
-  letter-spacing: -0.01em;
-  display: block;
+  line-height: 1.1;
   white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
+  display: block;
+}
+
+.card-price-value.is-no-price,
+.card-price-val.is-no-price {
+  font-family: var(--font-body);
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--accent);
+  line-height: 1.2;
+  white-space: normal;
 }
 
 .card-actions {
@@ -1301,9 +1321,9 @@ p, .body-copy {
   }
 
   .card-image-wrapper {
-    width: 34%;
-    min-width: 110px;
-    max-width: 140px;
+    width: 30%;
+    min-width: 100px;
+    max-width: 120px;
     height: auto;
     align-self: stretch;
     flex-shrink: 0;
@@ -1352,7 +1372,7 @@ p, .body-copy {
     display: flex;
     flex-direction: column;
     gap: 6px;
-    padding: 12px 12px 10px;
+    padding: 12px 12px 10px 12px;
     overflow: visible;
   }
 
@@ -1373,9 +1393,8 @@ p, .body-copy {
 
   .card-meta-row {
     display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    gap: 4px 10px;
+    flex-direction: column;
+    gap: 2px;
     font-family: var(--font-mono);
     font-size: 0.8rem;
     color: var(--ink-muted);
@@ -1385,15 +1404,13 @@ p, .body-copy {
   }
 
   .card-meta-item {
-    white-space: nowrap;
-    display: inline-flex;
-    align-items: center;
+    white-space: normal;
+    word-break: break-word;
+    display: block;
   }
 
   .card-meta-dot {
-    display: inline;
-    color: var(--ink-muted);
-    opacity: 0.6;
+    display: none;
   }
 
   .card-amenities-row {
@@ -1433,34 +1450,54 @@ p, .body-copy {
     justify-content: space-between;
     gap: 8px;
     margin-top: auto;
-    padding-top: 8px;
+    padding-top: 10px;
     border-top: 1px solid var(--rule-light);
     min-width: 0;
   }
 
+  .card-price-block,
   .card-price-wrap {
-    flex: 1;
-    min-width: 0;
+    flex: 1 1 auto;
+    min-width: max-content;
+    display: flex;
+    flex-direction: column;
   }
 
+  .card-price-label {
+    font-family: var(--font-mono);
+    font-size: 0.76rem;
+    color: var(--ink-muted);
+    display: block;
+    line-height: 1.2;
+  }
+
+  .card-price-value,
   .card-price-val {
-    font-family: var(--font-body);
-    font-size: 0.95rem;
+    font-family: var(--font-display);
+    font-size: 1.2rem;
     font-weight: 700;
     color: var(--accent);
-    line-height: 1.2;
+    line-height: 1.1;
     white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
     display: block;
   }
 
+  .card-price-value.is-no-price,
+  .card-price-val.is-no-price {
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--accent);
+    line-height: 1.2;
+    white-space: normal;
+  }
+
   .card-actions {
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     gap: 8px;
     width: auto;
-    flex-shrink: 0;
     margin: 0;
     padding: 0;
   }
@@ -1497,9 +1534,9 @@ p, .body-copy {
   }
   .farm-card[aria-hidden="true"] > div:first-child,
   .skeleton-card .skeleton-img {
-    width: 34% !important;
-    min-width: 110px !important;
-    max-width: 140px !important;
+    width: 30% !important;
+    min-width: 100px !important;
+    max-width: 120px !important;
     height: auto !important;
     align-self: stretch !important;
     flex-shrink: 0 !important;
