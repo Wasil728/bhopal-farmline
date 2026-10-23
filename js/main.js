@@ -1280,6 +1280,32 @@ function initFormPage() {
       if (formWrapper) formWrapper.style.display = 'block';
       if (form) form.style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Explicitly render Turnstile now that the form is visible.
+      // The form wrapper is hidden when api.js first runs, so the widget
+      // never auto-renders. We trigger it manually after revealing the form.
+      const cfWidget = document.querySelector('.cf-turnstile');
+      if (cfWidget && !cfWidget.querySelector('iframe')) {
+        const doRender = () => {
+          window.turnstile.render(cfWidget, {
+            sitekey: cfWidget.dataset.sitekey || '0x4AAAAAAFS6Qis9vUBuPZiw',
+            theme: cfWidget.dataset.theme || 'light',
+            callback: window.onTurnstileSuccess,
+            'expired-callback': window.onTurnstileExpired,
+          });
+        };
+        if (window.turnstile) {
+          doRender();
+        } else {
+          // api.js still loading -- poll until ready
+          const waitId = setInterval(() => {
+            if (window.turnstile) {
+              clearInterval(waitId);
+              doRender();
+            }
+          }, 200);
+        }
+      }
     });
   }
     
