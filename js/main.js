@@ -14,8 +14,10 @@ window.addEventListener('unhandledrejection', function(event) {
   console.error('[Farmline Unhandled Promise]', event.reason);
   event.preventDefault();
 });
-// ── CLOUDFLARE TURNSTILE GLOBAL CALLBACKS ─────────────────────────────────
+// ── CLOUDFLARE TURNSTILE EXPLICIT RENDER & CALLBACKS ───────────────────────
 window._turnstileToken = null;
+window._turnstileWidgetId = null;
+
 window.onTurnstileSuccess = function(token) {
   window._turnstileToken = token;
   const msg = document.getElementById('turnstileMsg');
@@ -23,6 +25,50 @@ window.onTurnstileSuccess = function(token) {
 };
 window.onTurnstileExpired = function() {
   window._turnstileToken = null;
+};
+window.onTurnstileError = function(code) {
+  console.warn('[Turnstile Error]', code);
+};
+
+// Render Turnstile explicitly only when the form container is actually visible
+window.renderTurnstileWidget = function() {
+  const container = document.getElementById('turnstileWidget');
+  if (!container) return;
+  if (window._turnstileWidgetId !== null) return; // already rendered
+
+  // Local file preview fallback: Cloudflare blocks file:// protocol
+  if (window.location.protocol === 'file:') {
+    container.innerHTML = '<div style="padding:10px 14px;background:#e0f2fe;color:#0369a1;border-radius:6px;font-size:0.8rem;font-family:var(--font-mono);border:1px solid #bae6fd;">⚡ Local file preview: Security check auto-verified for testing</div>';
+    window._turnstileToken = 'local-preview-token';
+    const msg = document.getElementById('turnstileMsg');
+    if (msg) msg.style.display = 'none';
+    return;
+  }
+
+  if (window.turnstile && typeof window.turnstile.render === 'function') {
+    try {
+      window._turnstileWidgetId = window.turnstile.render('#turnstileWidget', {
+        sitekey: '0x4AAAAAAFS6Qis9vUBuPZiw',
+        theme: 'light',
+        callback: window.onTurnstileSuccess,
+        'expired-callback': window.onTurnstileExpired,
+        'error-callback': window.onTurnstileError
+      });
+    } catch (err) {
+      console.warn('[Turnstile Render Warning]', err);
+    }
+  } else {
+    // If api.js is still downloading, retry in 200ms
+    setTimeout(window.renderTurnstileWidget, 200);
+  }
+};
+
+window.onloadTurnstileCallback = function() {
+  // If user already passed the gate before api.js loaded, render now:
+  const gate = document.getElementById('ownershipGate');
+  if (!gate || gate.style.display === 'none') {
+    window.renderTurnstileWidget();
+  }
 };
 // ──────────────────────────────────────────────────────────────────────────
 
@@ -1280,6 +1326,11 @@ function initFormPage() {
       if (formWrapper) formWrapper.style.display = 'block';
       if (form) form.style.display = 'block';
       window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Explicitly render Turnstile now that the form is visible
+      if (typeof window.renderTurnstileWidget === 'function') {
+        window.renderTurnstileWidget();
+      }
     });
   }
     
@@ -1714,7 +1765,8 @@ function initFormPage() {
         const msg = document.getElementById('turnstileMsg');
         if (msg) msg.style.display = 'block';
         alert('Please complete the security check (Cloudflare Turnstile) above before submitting.');
-        document.querySelector('.cf-turnstile')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        const widgetEl = document.getElementById('turnstileWidget') || document.querySelector('.cf-turnstile');
+        widgetEl?.scrollIntoView({ behavior: 'smooth', block: 'center' });
         return;
       }
       // ──────────────────────────────────────────────────────────────────────
