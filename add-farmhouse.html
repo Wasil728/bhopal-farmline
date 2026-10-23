@@ -18,7 +18,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
-  <link rel="stylesheet" href="css/style.css?v=20261023_turnstile_fix">
+  <link rel="stylesheet" href="css/style.css?v=20261023_turnstile_csp">
   <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400..700&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body class="page-form">
@@ -328,12 +328,13 @@
 
   <button id="backToTop" class="back-to-top" aria-label="Back to top">↑</button>
 
-  <!-- Cloudflare Turnstile — anti-spam for listing submission -->
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit" defer></script>
+  <!-- Scripts -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.117.1/dist/umd/supabase.min.js" integrity="sha384-q36VSR1ktH2hgqgm+0LDeyqPW8CyZHSxfDSttSPm5ReOJzB+sYThmh7D4fE+jWTs" crossorigin="anonymous" defer></script>
   <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.1/dist/browser-image-compression.js" integrity="sha384-v7aXOXbpOITKzb3SW0dgnKc/2x2ywIhkYVl+ZdwxtUQHQZIt3rhKedAAePwgIeab" crossorigin="anonymous" defer></script>
-  <script src="js/data.js?v=20261023_turnstile_fix" defer></script>
-  <script src="js/main.js?v=20261023_turnstile_fix" defer></script>
+  <script src="js/data.js?v=20261023_turnstile_csp" defer></script>
+  <script src="js/main.js?v=20261023_turnstile_csp" defer></script>
+  <!-- Cloudflare Turnstile — explicit render -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onloadTurnstileCallback&render=explicit" defer></script>
 </body>
 </html>
 
